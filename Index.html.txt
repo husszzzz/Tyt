@@ -1,0 +1,66 @@
+<p style="color: #888;">سجل حضورك الآن وأحجز مكانك</p>
+        </div>
+
+        <div class="card">
+            <h3>👣 طلب مشاركة</h3>
+            <input type="text" id="pName" placeholder="الاسم الثلاثي">
+            <input type="text" id="tName" placeholder="اسم الفريق">
+            <button class="btn-submit" onclick="sendData()">
+                إرسال إلى @OM_G9 👣
+            </button>
+        </div>
+
+        <div class="list-container">
+            <div class="list-title">📋 قائمة الـ 10 المقبولين</div>
+            <div id="attendanceList" class="loader">جاري سحب الأسماء من الجدول...</div>
+        </div>
+    </div>
+
+    <script>
+        // دالة سحب الأسماء من جدولك (العمود Q من خلية 2 إلى 11)
+        const sheetID = "1-9KXtNhckL4-XRewxi15vgHkA7R3GHd6lyd8l0RbKqk";
+        const url = https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&range=Q2:Q11;
+
+        function fetchPlayers() {
+            fetch(url)
+                .then(res => res.text())
+                .then(data => {
+                    const temp = data.substring(47).slice(0, -2);
+                    const json = JSON.parse(temp);
+                    const rows = json.table.rows;
+                    let html = "";
+
+                    rows.forEach((row, index) => {
+                        const name = (row.c && row.c[0] && row.c[0].v) ? row.c[0].v : "بانتظار لاعب...";
+                        html += `
+                            <div class="player-row">
+                                <span class="player-name">${name}</span>
+                                <span class="player-num">لاعب #${index + 1}</span>
+                            </div>`;
+                    });
+                    document.getElementById('attendanceList').innerHTML = html;
+                })
+                .catch(err => {
+                    document.getElementById('attendanceList').innerHTML = "فشل تحميل الأسماء";
+                });
+        }
+
+        // دالة الإرسال للتلجرام
+        function sendData() {
+            const name = document.getElementById('pName').value;
+            const team = document.getElementById('tName').value;
+
+            if (!name || !team) {
+                alert("يأبه اكتب اسمك وفريقك أولاً!");
+                return;
+            }
+
+            const text = مشاركة جديدة في البطولة 👣\n\n👤 الاسم: ${name}\n⚽ الفريق: ${team};
+            window.open(`https://t.me/OM_G9?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        // تشغيل سحب الأسماء فور فتح الصفحة
+        fetchPlayers();
+    </script>
+</body>
+</html>
