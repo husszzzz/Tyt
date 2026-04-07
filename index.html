@@ -1,65 +1,58 @@
-<p style="color: #888;">سجل حضورك الآن وأحجز مكانك</p>
-        </div>
-
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بطولة أبطال الـ 4 A</title>
+    <style>
+        body { background-color: #0f0f0f; color: #ffffff; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
+        .container { width: 100%; max-width: 400px; }
+        .card { background: #1a1a1a; padding: 20px; border-radius: 15px; border-top: 4px solid #ff9800; box-shadow: 0 10px 20px rgba(0,0,0,0.5); margin-bottom: 20px; }
+        h1 { color: #ff9800; text-align: center; font-size: 24px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #252525; color: white; box-sizing: border-box; }
+        button { width: 100%; background: #ff9800; color: #000; border: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .list-container { background: #1a1a1a; padding: 15px; border-radius: 15px; }
+        .player-row { background: #252525; margin: 8px 0; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; border-right: 3px solid #ff9800; }
+        .player-name { font-weight: bold; }
+        .player-num { color: #ff9800; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 أبطال الـ 4 A</h1>
         <div class="card">
-            <h3>👣 طلب مشاركة</h3>
+            <h3 style="margin-top:0">👣 طلب مشاركة</h3>
             <input type="text" id="pName" placeholder="الاسم الثلاثي">
             <input type="text" id="tName" placeholder="اسم الفريق">
-            <button class="btn-submit" onclick="sendData()">
-                إرسال إلى @OM_G9 👣
-            </button>
+            <button onclick="sendData()">إرسال إلى @OM_G9 👣</button>
         </div>
-
         <div class="list-container">
-            <div class="list-title">📋 قائمة الـ 10 المقبولين</div>
-            <div id="attendanceList" class="loader">جاري سحب الأسماء من الجدول...</div>
+            <div style="margin-bottom:10px; border-bottom:1px solid #333; padding-bottom:5px">📋 قائمة الـ 10 المقبولين</div>
+            <div id="attendanceList">جاري التحميل...</div>
         </div>
     </div>
 
     <script>
-        // دالة سحب الأسماء من جدولك (العمود Q من خلية 2 إلى 11)
         const sheetID = "1-9KXtNhckL4-XRewxi15vgHkA7R3GHd6lyd8l0RbKqk";
         const url = https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&range=Q2:Q11;
 
         function fetchPlayers() {
-            fetch(url)
-                .then(res => res.text())
-                .then(data => {
-                    const temp = data.substring(47).slice(0, -2);
-                    const json = JSON.parse(temp);
-                    const rows = json.table.rows;
-                    let html = "";
-
-                    rows.forEach((row, index) => {
-                        const name = (row.c && row.c[0] && row.c[0].v) ? row.c[0].v : "بانتظار لاعب...";
-                        html += `
-                            <div class="player-row">
-                                <span class="player-name">${name}</span>
-                                <span class="player-num">لاعب #${index + 1}</span>
-                            </div>`;
-                    });
-                    document.getElementById('attendanceList').innerHTML = html;
-                })
-                .catch(err => {
-                    document.getElementById('attendanceList').innerHTML = "فشل تحميل الأسماء";
+            fetch(url).then(r => r.text()).then(d => {
+                const rows = JSON.parse(d.substring(47).slice(0,-2)).table.rows;
+                let h = "";
+                rows.forEach((r, i) => {
+                    const n = (r.c && r.c[0]) ? r.c[0].v : "بانتظار لاعب...";
+                    h += <div class="player-row"><span class="player-name">${n}</span><span class="player-num">#${i+1}</span></div>;
                 });
+                document.getElementById('attendanceList').innerHTML = h;
+            });
         }
-
-        // دالة الإرسال للتلجرام
         function sendData() {
-            const name = document.getElementById('pName').value;
-            const team = document.getElementById('tName').value;
-
-            if (!name || !team) {
-                alert("يأبه اكتب اسمك وفريقك أولاً!");
-                return;
-            }
-
-            const text = مشاركة جديدة في البطولة 👣\n\n👤 الاسم: ${name}\n⚽ الفريق: ${team};
-            window.open(`https://t.me/OM_G9?text=${encodeURIComponent(text)}`, '_blank');
+            const n = document.getElementById('pName').value;
+            const t = document.getElementById('tName').value;
+            if(!n || !t) return alert("املأ البيانات!");
+            window.open(`https://t.me/OM_G9?text=${encodeURIComponent("مشاركة جديدة:\nالاسم: "+n+"\nالفريق: "+t)}`);
         }
-
-        // تشغيل سحب الأسماء فور فتح الصفحة
         fetchPlayers();
     </script>
 </body>
