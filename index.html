@@ -3,57 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بطولة أبطال الـ 4 A</title>
+    <title>مفتش المواقع | الحسني</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #0f0f0f; color: #ffffff; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
-        .container { width: 100%; max-width: 400px; }
-        .card { background: #1a1a1a; padding: 20px; border-radius: 15px; border-top: 4px solid #ff9800; box-shadow: 0 10px 20px rgba(0,0,0,0.5); margin-bottom: 20px; }
-        h1 { color: #ff9800; text-align: center; font-size: 24px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #252525; color: white; box-sizing: border-box; }
-        button { width: 100%; background: #ff9800; color: #000; border: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
-        .list-container { background: #1a1a1a; padding: 15px; border-radius: 15px; }
-        .player-row { background: #252525; margin: 8px 0; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; border-right: 3px solid #ff9800; }
-        .player-name { font-weight: bold; }
-        .player-num { color: #ff9800; font-size: 12px; }
+        :root {
+            --bg: #050507;
+            --card: #0f0f15;
+            --accent: #9333ea;
+            --cyan: #00e5ff;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg);
+            color: var(--white);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card);
+            border: 1px solid #1e1e2d;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin: 0;
+            background: linear-gradient(90deg, var(--cyan), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            flex: 1;
+            background: #161621;
+            border: 1px solid #2d2d3f;
+            padding: 15px;
+            border-radius: 12px;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+        }
+
+        button {
+            background: linear-gradient(90deg, var(--accent), #6366f1);
+            color: white;
+            border: none;
+            padding: 0 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(147, 51, 234, 0.4);
+        }
+
+        .result-area {
+            position: relative;
+            margin-top: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 400px;
+            background: #000;
+            color: #00ff41; /* لون المبرمجين الأخضر */
+            border: 1px solid #2d2d3f;
+            border-radius: 12px;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            resize: none;
+            direction: ltr; /* الكود يظهر من اليسار */
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255,255,255,0.1);
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 5px;
+        }
+
+        .footer-rights {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #555;
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h1>🏆 أبطال الـ 4 A</h1>
-        <div class="card">
-            <h3 style="margin-top:0">👣 طلب مشاركة</h3>
-            <input type="text" id="pName" placeholder="الاسم الثلاثي">
-            <input type="text" id="tName" placeholder="اسم الفريق">
-            <button onclick="sendData()">إرسال إلى @OM_G9 👣</button>
+        <div class="header">
+            <h1>أداة الحسني لسحب الهيكلية</h1>
+            <p>ادخل رابط الموقع واضغط "تحليل" للحصول على كود الـ HTML</p>
         </div>
-        <div class="list-container">
-            <div style="margin-bottom:10px; border-bottom:1px solid #333; padding-bottom:5px">📋 قائمة الـ 10 المقبولين</div>
-            <div id="attendanceList">جاري التحميل...</div>
+
+        <div class="input-group">
+            <input type="text" id="siteUrl" placeholder="https://example.com" dir="ltr">
+            <button onclick="cloneSite()">تحليل الهيكل</button>
         </div>
+
+        <div class="result-area">
+            <button class="copy-btn" onclick="copyCode()">نسخ الكود</button>
+            <textarea id="output" readonly placeholder="الكود سيظهر هنا..."></textarea>
+        </div>
+
+        <center>
+            <div class="footer-rights">تم التطوير بواسطة حسين الحسني &copy; 2026</div>
+        </center>
     </div>
 
     <script>
-        const sheetID = "1-9KXtNhckL4-XRewxi15vgHkA7R3GHd6lyd8l0RbKqk";
-        const url = https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&range=Q2:Q11;
+        async function cloneSite() {
+            const url = document.getElementById('siteUrl').value;
+            const output = document.getElementById('output');
+            
+            if (!url) {
+                alert("يرجى إدخال الرابط أولاً!");
+                return;
+            }
 
-        function fetchPlayers() {
-            fetch(url).then(r => r.text()).then(d => {
-                const rows = JSON.parse(d.substring(47).slice(0,-2)).table.rows;
-                let h = "";
-                rows.forEach((r, i) => {
-                    const n = (r.c && r.c[0]) ? r.c[0].v : "بانتظار لاعب...";
-                    h += <div class="player-row"><span class="player-name">${n}</span><span class="player-num">#${i+1}</span></div>;
-                });
-                document.getElementById('attendanceList').innerHTML = h;
-            });
+            output.value = "جاري جلب البيانات وتحليل الهيكل... يرجى الانتظار";
+
+            try {
+                // نستخدم بروكسي AllOrigins لتجاوز حماية CORS وسحب البيانات
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+                const response = await fetch(proxyUrl);
+                const data = await response.json();
+
+                if (data.contents) {
+                    // عرض الكود المسحوب
+                    output.value = data.contents;
+                } else {
+                    output.value = "فشل التحليل. تأكد من صحة الرابط أو جرب موقعاً آخر.";
+                }
+            } catch (error) {
+                output.value = "حدث خطأ: " + error.message;
+            }
         }
-        function sendData() {
-            const n = document.getElementById('pName').value;
-            const t = document.getElementById('tName').value;
-            if(!n || !t) return alert("املأ البيانات!");
-            window.open(`https://t.me/OM_G9?text=${encodeURIComponent("مشاركة جديدة:\nالاسم: "+n+"\nالفريق: "+t)}`);
+
+        function copyCode() {
+            const text = document.getElementById('output');
+            text.select();
+            document.execCommand('copy');
+            alert("تم نسخ الكود بنجاح!");
         }
-        fetchPlayers();
     </script>
 </body>
 </html>
