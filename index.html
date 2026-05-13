@@ -2,191 +2,510 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مفتش المواقع | الحسني</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HUB HUSSAIN 365 - PRO LEAGUE</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --bg: #050507;
-            --card: #0f0f15;
-            --accent: #9333ea;
-            --cyan: #00e5ff;
-            --white: #ffffff;
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap');
+        
+        :root { 
+            --gold: #FBBF24; /* ذهبي عصري */
+            --gold-glow: rgba(251, 191, 36, 0.4);
+            --bg-main: #0F172A; /* أزرق داكن جداً - ستايل التطبيقات */
+            --bg-card: #1E293B;
+            --accent-red: #EF4444;
+            --text-light: #F8FAFC;
+            --text-muted: #94A3B8;
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
 
-        body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: var(--bg);
-            color: var(--white);
-            margin: 0;
+        /* --- تأثيرات الحركة --- */
+        @keyframes pulse-soft {
+            0% { transform: scale(1); text-shadow: 0 0 10px var(--gold-glow); }
+            50% { transform: scale(1.02); text-shadow: 0 0 20px var(--gold); }
+            100% { transform: scale(1); text-shadow: 0 0 10px var(--gold-glow); }
+        }
+
+        @keyframes leader-glow {
+            0% { box-shadow: 0 0 10px var(--gold-glow) inset, 0 0 5px var(--gold-glow); border-color: rgba(251, 191, 36, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.8) inset, 0 0 15px rgba(251, 191, 36, 0.6); border-color: var(--gold); }
+            100% { box-shadow: 0 0 10px var(--gold-glow) inset, 0 0 5px var(--gold-glow); border-color: rgba(251, 191, 36, 0.3); }
+        }
+
+        @keyframes ticker { 
+            0% { transform: translateX(-100%); } 
+            100% { transform: translateX(100%); } 
+        }
+
+        /* --- الإعدادات العامة --- */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            background-color: var(--bg-main); 
+            color: var(--text-light); 
+            font-family: 'Cairo', sans-serif; 
+            margin: 0; 
+            padding-bottom: 80px; /* مساحة للشريط السفلي */
+            overflow-x: hidden; 
+        }
+
+        /* --- الهيدر العلوي الاحترافي --- */
+        .app-header {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 15px 20px;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
 
-        .container {
-            width: 100%;
-            max-width: 900px;
-            background: var(--card);
-            border: 1px solid #1e1e2d;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        .brand-container { display: flex; flex-direction: column; }
+        .brand-subtitle { font-size: 0.65rem; color: var(--accent-red); font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
+        .brand-title { font-size: 1.2rem; font-weight: 900; color: #fff; }
+        
+        .timer-container {
+            background: rgba(0,0,0,0.5);
+            padding: 5px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--gold-glow);
         }
+        #countdown { font-size: 1.1rem; font-weight: 900; color: var(--gold); font-family: monospace; letter-spacing: 1px; }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            margin: 0;
-            background: linear-gradient(90deg, var(--cyan), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .header p {
-            color: #888;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        .input-group {
+        /* --- شريط الأخبار --- */
+        .news-ticker-wrapper {
+            background: linear-gradient(90deg, #000, #1a1000, #000);
+            border-bottom: 2px solid var(--gold);
+            height: 35px;
             display: flex;
+            align-items: center;
+            overflow: hidden;
+            position: sticky;
+            top: 65px;
+            z-index: 999;
+        }
+        .ticker-label {
+            background: var(--gold);
+            color: #000;
+            font-weight: 900;
+            padding: 0 15px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            position: absolute;
+            right: 0;
+            z-index: 2;
+            font-size: 0.8rem;
+        }
+        .ticker-content { display: inline-block; animation: ticker 25s linear infinite; color: #fff; font-size: 0.85rem; font-weight: 600; white-space: nowrap; padding-right: 80px; }
+
+        /* --- الحاويات والبطاقات --- */
+        .container { max-width: 600px; margin: 0 auto; padding: 20px 15px; min-height: 80vh; }
+        
+        .section-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
             gap: 10px;
             margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
         }
+        .section-header i { color: var(--gold); font-size: 1.4rem; background: rgba(251, 191, 36, 0.1); padding: 10px; border-radius: 12px; }
+        .section-header h2 { margin: 0; font-size: 1.1rem; font-weight: 800; color: #fff; }
 
-        input {
-            flex: 1;
-            background: #161621;
-            border: 1px solid #2d2d3f;
-            padding: 15px;
-            border-radius: 12px;
-            color: white;
-            outline: none;
-            transition: 0.3s;
+        /* --- الجداول والقوائم --- */
+        .rank-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; background: rgba(0,0,0,0.2); border-radius: 15px; margin-bottom: 10px;
+            border-right: 4px solid transparent; transition: all 0.3s ease;
         }
+        .rank-item:hover { background: rgba(255,255,255,0.05); }
+        .rank-item.top { border-right-color: var(--gold); background: linear-gradient(90deg, rgba(251,191,36,0.05), transparent); }
+        .rank-item b { background: rgba(251,191,36,0.1); color: var(--gold); padding: 4px 10px; border-radius: 8px; }
 
-        input:focus {
-            border-color: var(--cyan);
-            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
-        }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        th { color: var(--text-muted); font-size: 0.8rem; padding-bottom: 10px; text-transform: uppercase; }
+        td { padding: 14px 10px; background: rgba(0,0,0,0.2); text-align: center; font-weight: 700; font-size: 0.95rem; }
+        td:first-child { border-radius: 0 12px 12px 0; }
+        td:last-child { border-radius: 12px 0 0 12px; font-size: 1.1rem; }
 
-        button {
-            background: linear-gradient(90deg, var(--accent), #6366f1);
-            color: white;
-            border: none;
-            padding: 0 25px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
+        /* صف المتصدر المطور */
+        .table-leader-row td {
+            background: linear-gradient(90deg, rgba(251, 191, 36, 0.15), rgba(0,0,0,0.4)) !important;
+            border-top: 1px solid rgba(251, 191, 36, 0.3);
+            border-bottom: 1px solid rgba(251, 191, 36, 0.3);
+            color: #fff;
         }
+        .table-leader-row { animation: leader-glow 2.5s infinite !important; position: relative; z-index: 10; transform: scale(1.02); display: table-row;}
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(147, 51, 234, 0.4);
+        /* --- بطاقات المباريات --- */
+        .match-card {
+            background: linear-gradient(145deg, #161e2e, #0f172a);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px; padding: 15px; margin-bottom: 15px; text-align: center;
+            position: relative; overflow: hidden;
         }
+        .match-card::before { content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: var(--gold); }
+        .match-time { font-size: 0.75rem; color: var(--gold); background: rgba(251,191,36,0.1); padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+        .match-teams { font-size: 1.2rem; font-weight: 900; color: #fff; margin-bottom: 5px; }
+        .match-info { font-size: 0.8rem; color: var(--text-muted); }
 
-        .result-area {
-            position: relative;
-            margin-top: 20px;
+        /* --- اللاعبين والتشكيلة --- */
+        .player-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+        .p-card-btn {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 16px;
+            padding: 15px; text-align: center; cursor: pointer; transition: 0.3s;
+            display: flex; flex-direction: column; align-items: center; gap: 10px; font-weight: 800; font-size: 0.9rem;
         }
+        .p-card-btn i { font-size: 1.5rem; color: var(--text-muted); }
+        .p-card-btn:active { transform: scale(0.95); border-color: var(--gold); }
+        
+        .fire-hero-btn { grid-column: 1 / -1; background: linear-gradient(45deg, rgba(239, 68, 68, 0.1), transparent); border: 1px solid var(--accent-red); flex-direction: row; justify-content: center; font-size: 1.1rem; }
+        .fire-hero-btn i { color: var(--accent-red); animation: pulse-soft 2s infinite; }
 
-        textarea {
-            width: 100%;
-            height: 400px;
-            background: #000;
-            color: #00ff41; /* لون المبرمجين الأخضر */
-            border: 1px solid #2d2d3f;
-            border-radius: 12px;
-            padding: 15px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            resize: none;
-            direction: ltr; /* الكود يظهر من اليسار */
+        /* تصميم رجل المباراة المطوّر */
+        .motm-showcase {
+            background: linear-gradient(180deg, #1E293B, #000);
+            border: 1px solid var(--gold); border-radius: 24px; padding: 30px 20px;
+            text-align: center; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            margin: 20px auto; overflow: hidden;
         }
+        .motm-showcase::after { content: 'MOTM'; position: absolute; font-size: 8rem; color: rgba(255,255,255,0.02); top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: 900; z-index: 0; pointer-events: none; }
+        .motm-img-wrapper { width: 120px; height: 120px; margin: 0 auto 15px; border-radius: 50%; border: 4px solid var(--gold); padding: 3px; background: #000; position: relative; z-index: 1; box-shadow: 0 0 20px var(--gold-glow); }
+        .motm-img-wrapper img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .motm-title { color: var(--gold); font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; font-weight: 800; margin-bottom: 5px; position: relative; z-index: 1; }
+        .motm-name { font-size: 1.8rem; font-weight: 900; color: #fff; position: relative; z-index: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
 
-        .copy-btn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(255,255,255,0.1);
-            padding: 5px 10px;
-            font-size: 12px;
-            border-radius: 5px;
+        /* تصميم الملعب وتشكيلة الأسبوع */
+        .pitch-container {
+            position: relative; width: 100%; height: 450px; background: #132014;
+            border: 2px solid #2a402c; border-radius: 20px; overflow: hidden; margin-top: 30px;
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 45px, rgba(255,255,255,0.02) 45px, rgba(255,255,255,0.02) 90px);
         }
+        .pitch-lines { position: absolute; width: 100%; height: 100%; pointer-events: none; }
+        .pitch-lines::before { content:''; position:absolute; top:50%; left:0; width:100%; height:2px; background:rgba(255,255,255,0.2); transform:translateY(-50%); }
+        .pitch-lines::after { content:''; position:absolute; top:50%; left:50%; width:80px; height:80px; border:2px solid rgba(255,255,255,0.2); border-radius:50%; transform:translate(-50%,-50%); }
+        .pitch-box { position:absolute; bottom:0; left:50%; width:180px; height:70px; border:2px solid rgba(255,255,255,0.2); border-bottom:none; transform:translateX(-50%); }
+        
+        .pitch-player { position: absolute; transform: translate(-50%, -50%); text-align: center; width: 80px; z-index: 10; }
+        .pitch-player-img { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--gold); background: #000; margin: 0 auto; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .pitch-player-img img { width: 100%; height: 100%; object-fit: cover; }
+        .pitch-player-name { background: rgba(0,0,0,0.8); color: #fff; font-size: 0.65rem; padding: 3px 5px; border-radius: 6px; border: 1px solid rgba(251,191,36,0.5); margin-top: 5px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .footer-rights {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #555;
+        /* --- الشريط السفلي (التنقل) --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(15px);
+            border-top: 1px solid var(--glass-border);
+            display: flex; justify-content: space-around; padding: 12px 0 20px 0;
+            z-index: 2000; box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
         }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+            color: var(--text-muted); text-decoration: none; font-size: 0.75rem; font-weight: 700;
+            cursor: pointer; transition: 0.3s; flex: 1;
+        }
+        .nav-item i { font-size: 1.3rem; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .nav-item.active { color: var(--gold); }
+        .nav-item.active i { transform: translateY(-3px) scale(1.1); text-shadow: 0 0 10px var(--gold-glow); }
+
+        /* النافذة المنبثقة (Modal) */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; backdrop-filter: blur(8px); padding: 20px; }
+        .modal-box { background: var(--bg-card); border: 1px solid var(--gold); width: 100%; max-width: 400px; padding: 30px; border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); animation: pulse-soft 0.3s ease-out; }
+
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <h1>أداة الحسني لسحب الهيكلية</h1>
-            <p>ادخل رابط الموقع واضغط "تحليل" للحصول على كود الـ HTML</p>
-        </div>
-
-        <div class="input-group">
-            <input type="text" id="siteUrl" placeholder="https://example.com" dir="ltr">
-            <button onclick="cloneSite()">تحليل الهيكل</button>
-        </div>
-
-        <div class="result-area">
-            <button class="copy-btn" onclick="copyCode()">نسخ الكود</button>
-            <textarea id="output" readonly placeholder="الكود سيظهر هنا..."></textarea>
-        </div>
-
-        <center>
-            <div class="footer-rights">تم التطوير بواسطة حسين الحسني &copy; 2026</div>
-        </center>
+<!-- الهيدر العلوي -->
+<div class="app-header">
+    <div class="brand-container">
+        <span class="brand-subtitle"><i class="fas fa-bolt"></i> Hassany</span>
+        <span class="brand-title">PRO LEAGUE <i class="fas fa-crown" style="color:var(--gold); font-size: 0.9rem;"></i></span>
     </div>
+    <div class="timer-container">
+        <div id="countdown">00:00:00</div>
+    </div>
+</div>
 
-    <script>
-        async function cloneSite() {
-            const url = document.getElementById('siteUrl').value;
-            const output = document.getElementById('output');
-            
-            if (!url) {
-                alert("يرجى إدخال الرابط أولاً!");
-                return;
-            }
+<!-- شريط الأخبار -->
+<div class="news-ticker-wrapper">
+    <div class="ticker-label"><i class="fas fa-bell" style="margin-left: 5px;"></i> عاجل</div>
+    <div class="ticker-content" id="news-text">جاري تحميل الأخبار الملكية...</div>
+</div>
 
-            output.value = "جاري جلب البيانات وتحليل الهيكل... يرجى الانتظار";
+<!-- الصفحات -->
+<!-- 1. الرئيسية -->
+<div id="home-page" class="container">
+    <div class="section-card">
+        <div class="section-header">
+            <i class="fas fa-globe"></i><h2>التصنيف العالمي</h2>
+        </div>
+        <div id="world-rank"></div>
+    </div>
+    <div class="section-card">
+        <div class="section-header">
+            <i class="fas fa-list-ol"></i><h2>ترتيب الدوري</h2>
+        </div>
+        <table>
+            <thead><tr><th>#</th><th style="text-align:right">الفريق</th><th>لعب</th><th>نقاط</th></tr></thead>
+            <tbody id="league-table"></tbody>
+        </table>
+    </div>
+</div>
 
-            try {
-                // نستخدم بروكسي AllOrigins لتجاوز حماية CORS وسحب البيانات
-                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-                const response = await fetch(proxyUrl);
-                const data = await response.json();
+<!-- 2. المباريات -->
+<div id="matches-page" class="container hidden">
+    <div class="section-card">
+        <div class="section-header">
+            <i class="fas fa-calendar-alt"></i><h2>جدول المباريات</h2>
+        </div>
+        <div id="next-matches"></div>
+    </div>
+</div>
 
-                if (data.contents) {
-                    // عرض الكود المسحوب
-                    output.value = data.contents;
-                } else {
-                    output.value = "فشل التحليل. تأكد من صحة الرابط أو جرب موقعاً آخر.";
+<!-- 3. الجوائز -->
+<div id="awards-page" class="container hidden">
+    <div class="section-card">
+        <div class="section-header">
+            <i class="fas fa-star"></i><h2>رجل الجولة وتشكيلة الأسبوع</h2>
+        </div>
+        <div id="motm-list"></div>
+    </div>
+    <div class="section-card">
+        <div class="section-header">
+            <i class="fas fa-medal"></i><h2>مرشحي البالون دور</h2>
+        </div>
+        <div id="ballon-list"></div>
+    </div>
+    <div class="section-card">
+        <div class="section-header">
+            <i class="fas fa-futbol"></i><h2>صراع الهدافين</h2>
+        </div>
+        <div id="scorers-list"></div>
+    </div>
+</div>
+
+<!-- 4. اللاعبين -->
+<div id="players-page" class="container hidden">
+    <div class="section-card">
+        <div class="section-header">
+            <i class="fas fa-users"></i><h2>سجل اللاعبين</h2>
+        </div>
+        <div class="player-grid" id="players-list"></div>
+    </div>
+</div>
+
+<!-- الشريط السفلي للتنقل -->
+<nav class="bottom-nav">
+    <div class="nav-item active" onclick="showAppPage('home', this)">
+        <i class="fas fa-home"></i><span>الرئيسية</span>
+    </div>
+    <div class="nav-item" onclick="showAppPage('matches', this)">
+        <i class="fas fa-ticket-alt"></i><span>المباريات</span>
+    </div>
+    <div class="nav-item" onclick="showAppPage('awards', this)">
+        <i class="fas fa-trophy"></i><span>الجوائز</span>
+    </div>
+    <div class="nav-item" onclick="showAppPage('players', this)">
+        <i class="fas fa-id-badge"></i><span>اللاعبين</span>
+    </div>
+</nav>
+
+<!-- نافذة معلومات اللاعب -->
+<div class="modal" id="pModal" onclick="this.style.display='none'">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <h2 id="mName" style="color:var(--gold); margin-top:0; font-size:1.8rem; font-weight:900;"></h2>
+        <div style="height:2px; background:var(--glass-border); margin: 15px 0;"></div>
+        <p id="mInfo" style="line-height:1.8; color:var(--text-light); font-size:1.1rem;"></p>
+        <button onclick="document.getElementById('pModal').style.display='none'" style="margin-top:20px; background:var(--gold); color:#000; border:none; padding:10px 30px; border-radius:12px; font-weight:bold; font-family:'Cairo'; cursor:pointer; width:100%;">إغلاق</button>
+    </div>
+</div>
+
+<script>
+    // الرابط والبيانات البرمجية لم تتغير إطلاقاً
+    const url = "https://docs.google.com/spreadsheets/d/1-MToSjxxd5GTvmghx0MxkZJmU0gXOZbDPCt8-Q45Db8/export?format=csv";
+
+    // دالة التنقل المحدثة لتلائم الشريط السفلي
+    function showAppPage(p, element) {
+        ['home', 'matches', 'awards', 'players'].forEach(id => {
+            document.getElementById(id + '-page').classList.toggle('hidden', id !== p);
+        });
+        
+        // تحديث أيقونة الشريط السفلي الفعالة
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        if(element) element.classList.add('active');
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openP(n, i) { 
+        document.getElementById('mName').innerText = n; 
+        document.getElementById('mInfo').innerText = i; 
+        document.getElementById('pModal').style.display = 'flex'; 
+    }
+
+    async function updateData() {
+        try {
+            const r = await fetch(url);
+            const t = await r.text();
+            const rows = t.split('\n').map(row => row.split(',').map(c => c.replace(/"/g, '').trim()));
+
+            document.getElementById('news-text').innerText = rows[1][21] || "لا توجد أخبار حالياً";
+
+            // التصنيف
+            let wr="", trs="";
+            for(let i=1; i<=5; i++) {
+                if(rows[i][8]) {
+                    wr += `<div class="rank-item ${i==1?'top':''}">
+                        <span>${i==1?'<i class="fas fa-crown" style="color:var(--gold)"></i> ':i+'.'} ${rows[i][8]}</span>
+                        <b>${rows[i][9]}</b>
+                    </div>`;
                 }
-            } catch (error) {
-                output.value = "حدث خطأ: " + error.message;
             }
-        }
+            document.getElementById('world-rank').innerHTML = wr;
 
-        function copyCode() {
-            const text = document.getElementById('output');
-            text.select();
-            document.execCommand('copy');
-            alert("تم نسخ الكود بنجاح!");
+            // كود فحص الخبر وتشغيل الصوت (بقى كما هو)
+            let newsUpdate = rows[0][0]; 
+            if (window.savedNews && window.savedNews !== newsUpdate) {
+                new Audio('https://f.top4top.io/m_3766rbvfw2.mp3').play().catch(() => {});
+            }
+            window.savedNews = newsUpdate;
+
+            // جدول الدوري
+            let teams = rows.slice(1).map(r => ({ n: r[0], p: r[1], s: parseInt(r[5]) || 0 })).filter(x => x.n && x.n !== "الفريق").sort((a,b) => b.s - a.s);
+            teams.forEach((x, i) => { 
+                trs += `<tr>
+                    <td>${i==0?'<i class="fas fa-crown" style="color:var(--gold)"></i>':i+1}</td>
+                    <td style="text-align:right">${x.n}</td>
+                    <td>${x.p}</td>
+                    <td style="color:var(--gold)">${x.s}</td>
+                </tr>`; 
+            });
+            document.getElementById('league-table').innerHTML = trs;
+
+            // الجوائز (البلندور + الهدافين + MOTM)
+            let bl="", sl="", motm="", pl="";
+            for(let i=1; i<=5; i++) if(rows[i][11]) bl += `<div class="rank-item"><span><i class="fas fa-award" style="color:var(--gold)"></i> ${rows[i][11]}</span></div>`;
+            for(let i=1; i<=5; i++) if(rows[i][13]) sl += `<div class="rank-item"><span>${rows[i][13]}</span><b>${rows[i][14]} هدف</b></div>`;
+            
+            // تحديث ستايل رجل المباراة ليتوافق مع الكلاسات الجديدة بدلا من الستايلات المضمنة
+            if(rows[1][16]) {
+                motm = `
+                <div class="motm-showcase">
+                    <div class="motm-img-wrapper">
+                        <img src="${rows[0][15]}" onerror="this.src='https://via.placeholder.com/120/000000/FBBF24?text=MOTM'">
+                    </div>
+                    <div class="motm-title">رجل الجولة</div>
+                    <div class="motm-name">${rows[1][16]}</div>
+                </div>`;
+            }
+
+            // تحديث ستايل التشكيلة ليتوافق مع التصميم الجديد
+            let totwHtml = `
+            <div class="pitch-container">
+                <div class="pitch-lines"></div>
+                <div class="pitch-box"></div>
+                ${renderPlayerTemplate(rows[2][12], rows[1][12], 'bottom: 8%; left: 50%')}
+                ${renderPlayerTemplate(rows[4][12], rows[3][12], 'bottom: 28%; left: 20%')}
+                ${renderPlayerTemplate(rows[6][12], rows[5][12], 'bottom: 28%; left: 80%')}
+                ${renderPlayerTemplate(rows[8][12], rows[7][12], 'top: 45%; left: 50%')}
+                ${renderPlayerTemplate(rows[10][12], rows[9][12], 'top: 15%; left: 25%')}
+                ${renderPlayerTemplate(rows[12][12], rows[11][12], 'top: 15%; left: 75%')}
+            </div>`;
+
+            function renderPlayerTemplate(img, name, pos) {
+                if(!name || name.trim() == "") return "";
+                return `
+                <div class="pitch-player" style="${pos}">
+                    <div class="pitch-player-img">
+                        <img src="${img}" onerror="this.src='https://via.placeholder.com/65/000000/FBBF24?text=P'">
+                    </div>
+                    <div class="pitch-player-name">${name}</div>
+                </div>`;
+            }
+
+            motm += totwHtml;
+
+            document.getElementById('ballon-list').innerHTML = bl;
+            document.getElementById('scorers-list').innerHTML = sl;
+            document.getElementById('motm-list').innerHTML = motm;
+
+            // قسم اللاعبين
+            if(rows[1][22]) pl += `<div class="p-card-btn fire-hero-btn" onclick="openP('${rows[1][22]}', '${rows[1][23]}')"><i class="fas fa-fire"></i> <span>${rows[1][22]}</span></div>`;
+            for(let i=1; i<=12; i++) {
+                if(rows[i][24]) pl += `<div class="p-card-btn" onclick="openP('${rows[i][24]}', '${rows[i][25]}')"><i class="fas fa-user-shield" style="color:var(--gold)"></i> <span>${rows[i][24]}</span></div>`;
+            }
+            document.getElementById('players-list').innerHTML = pl;
+
+            // المباريات
+            let mx = ""; 
+            for(let i=1; i<=20; i++) {
+                if(rows[i][17]) {
+                    mx += `
+                    <div class="match-card">
+                        <div class="match-time">${rows[i][20]}</div>
+                        <div class="match-teams">${rows[i][17]} &nbsp; VS &nbsp; ${rows[i][18]}</div>
+                        <div class="match-info">${rows[i][19]}</div>
+                    </div>`;
+                }
+            }
+            document.getElementById('next-matches').innerHTML = mx;
+
+            // تفعيل التوهج للمتصدر
+            highlightLeader();
+
+        } catch(e) { console.error("Error fetching data:", e); }
+    }
+
+    updateData(); 
+    setInterval(updateData, 20000);
+
+    // عداد الوقت
+    setInterval(() => {
+        const target = new Date("Apr 14, 2026 16:00:00").getTime();
+        const now = new Date().getTime();
+        const diff = target - now;
+
+        const el = document.getElementById("countdown");
+        if (diff < 0) {
+            el.innerText = "بدأت البطولة!";
+            el.style.color = "var(--accent-red)";
+            el.style.animation = "pulse-soft 1s infinite";
+        } else {
+            const h = Math.floor(diff / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            el.innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
         }
-    </script>
+    }, 1000);
+
+    // دالة تمييز المتصدر
+    function highlightLeader() {
+        const currentLeader = document.querySelector('#league-table tr.table-leader-row');
+        if (currentLeader) {
+            currentLeader.classList.remove('table-leader-row');
+        }
+        const rows = document.querySelectorAll('#league-table tr');
+        if (rows.length > 0) {
+            rows[0].classList.add('table-leader-row');
+        }
+    }
+</script>
 </body>
 </html>
