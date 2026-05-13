@@ -3,223 +3,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FileMaster Pro - مدير الملفات الذكي</title>
+    <title>Hassany File Manager</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 
         :root {
-            --accent: #007AFF; /* لون آيفون الأزرق */
-            --bg: #F2F2F7;
-            --card-bg: #FFFFFF;
-            --text-main: #1C1C1E;
-            --text-muted: #8E8E93;
-            --danger: #FF3B30;
-            --success: #34C759;
+            --ios-blue: #007AFF;
+            --ios-bg: #F2F2F7;
+            --ios-card: #FFFFFF;
+            --ios-gray: #8E8E93;
+            --ios-red: #FF3B30;
+            --ios-green: #34C759;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding-bottom: 80px; }
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: var(--ios-bg); 
+            margin: 0; 
+            color: #000;
+            user-select: none;
+            padding-bottom: 100px;
+        }
 
-        /* الهيدر العلوي */
-        .app-header {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            padding: 20px;
+        /* هيدر الآيفون */
+        .ios-header {
+            padding: 40px 20px 10px;
+            background: var(--ios-bg);
             position: sticky; top: 0; z-index: 100;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid #D1D1D6;
         }
-        .app-header h1 { margin: 0; font-size: 1.5rem; font-weight: 800; }
+        .ios-header h1 { font-size: 34px; font-weight: 700; margin: 0; letter-spacing: -1px; }
 
-        /* منطقة الملفات */
-        .container { padding: 15px; }
-        .file-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-
-        /* بطاقة الملف */
-        .file-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 15px;
-            display: flex; align-items: center; gap: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: 0.3s;
-            animation: slideIn 0.4s ease-out;
-        }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .file-icon {
-            width: 50px; height: 50px; background: #E5E5EA;
-            border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; color: var(--accent);
+        /* حاوية القوائم (Settings Style) */
+        .ios-group {
+            background: var(--ios-card);
+            margin: 20px 16px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        .file-info { flex: 1; }
-        .file-name { font-weight: 600; font-size: 1rem; display: block; }
-        .file-meta { font-size: 0.8rem; color: var(--text-muted); }
+        .ios-row {
+            display: flex; align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #E5E5EA;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .ios-row:last-child { border-bottom: none; }
+        .ios-row:active { background-color: #D1D1D6; }
 
-        /* قائمة الإجراءات */
-        .file-actions { display: flex; gap: 10px; }
-        .action-btn {
-            background: none; border: none; font-size: 1.2rem; cursor: pointer;
-            color: var(--text-muted); padding: 5px;
-        }
-        .action-btn:hover { color: var(--accent); }
-        .action-btn.delete:hover { color: var(--danger); }
-
-        /* نافذة تحويل الصيغة */
-        .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5); 
-            display: none; align-items: center; justify-content: center; z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-        .modal-box {
-            background: var(--card-bg); width: 90%; max-width: 400px;
-            border-radius: 24px; padding: 25px; text-align: center;
-        }
-        .modal-box input {
-            width: 100%; padding: 12px; margin: 15px 0; border-radius: 10px;
-            border: 1px solid #D1D1D6; font-family: 'Cairo';
+        .icon-box {
+            width: 30px; height: 30px;
+            border-radius: 7px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; margin-left: 15px; font-size: 14px;
         }
 
-        /* شريط التحكم السفلي */
-        .bottom-bar {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 500px; background: #1C1C1E; border-radius: 50px;
-            padding: 10px 20px; display: flex; justify-content: space-around;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 500;
-        }
-        .nav-item { color: #fff; text-align: center; cursor: pointer; opacity: 0.7; }
-        .nav-item.active { opacity: 1; color: var(--accent); }
-        .nav-item i { font-size: 1.4rem; display: block; }
-        .nav-item span { font-size: 0.7rem; font-weight: bold; }
+        .row-label { flex: 1; font-size: 17px; font-weight: 400; }
+        .row-value { color: var(--ios-gray); font-size: 15px; margin-left: 10px; }
+        .chevron { color: #C4C4C6; font-size: 14px; }
 
-        /* زر الإضافة العائم */
-        .add-btn {
-            width: 55px; height: 55px; background: var(--accent); color: #fff;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; border: none; cursor: pointer; box-shadow: 0 5px 15px rgba(0,122,255,0.4);
-            transform: translateY(-30px);
+        /* أزرار الأكشن السفلية داخل الصف */
+        .actions-tray {
+            display: none; background: #f9f9f9;
+            padding: 10px; justify-content: space-around;
+            border-bottom: 1px solid #eee;
+        }
+        .active-row + .actions-tray { display: flex; }
+
+        .btn-action {
+            background: none; border: none; color: var(--ios-blue);
+            font-family: 'Cairo'; font-size: 13px; font-weight: 600;
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
         }
 
-        .link-badge {
-            background: #E8F2FF; color: var(--accent); padding: 2px 8px;
-            border-radius: 6px; font-size: 0.7rem; font-weight: bold; margin-top: 5px; display: inline-block;
+        /* شريط التنقل السفلي */
+        .tab-bar {
+            position: fixed; bottom: 0; width: 100%;
+            background: rgba(249, 249, 249, 0.94);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid #B2B2B2;
+            display: flex; justify-content: space-around;
+            padding: 10px 0 30px; z-index: 1000;
         }
+        .tab-item {
+            color: var(--ios-gray); text-align: center; font-size: 10px;
+            text-decoration: none; flex: 1;
+        }
+        .tab-item.active { color: var(--ios-blue); }
+        .tab-item i { font-size: 22px; margin-bottom: 3px; display: block; }
+
+        /* المودال (النافذة العائمة) */
+        .ios-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+            display: none; align-items: flex-end; z-index: 2000;
+        }
+        .modal-sheet {
+            background: var(--ios-bg); width: 100%;
+            border-radius: 15px 15px 0 0;
+            padding: 20px; animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .ios-input {
+            width: 100%; background: #fff; border: none;
+            padding: 15px; border-radius: 10px; font-size: 17px;
+            margin: 15px 0; outline: none; font-family: 'Cairo';
+        }
+
+        .ios-btn-main {
+            width: 100%; background: var(--ios-blue); color: #fff;
+            border: none; padding: 15px; border-radius: 12px;
+            font-size: 17px; font-weight: 600; font-family: 'Cairo';
+        }
+
+        .hidden { display: none !important; }
+
+        /* ستايل خاص للمطور */
+        .dev-header { text-align: center; padding: 20px; }
+        .dev-avatar { width: 80px; height: 80px; background: var(--ios-blue); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 30px; color: #fff; }
     </style>
 </head>
 <body>
 
-    <header class="app-header">
-        <h1>ملفاتي</h1>
-        <div style="color: var(--accent); font-weight: 600;"><i class="fas fa-search"></i></div>
-    </header>
-
-    <div class="container">
-        <div id="fileList" class="file-grid">
-            </div>
+    <div id="nav-files" class="tab-content">
+        <header class="ios-header"><h1>ملفاتي</h1></header>
+        <div class="ios-group" id="file-list">
+            <div style="padding: 40px; text-align: center; color: var(--ios-gray);">لا توجد ملفات. اضغط على "إضافة"</div>
+        </div>
     </div>
 
-    <div class="modal" id="convertModal">
-        <div class="modal-box">
-            <h3 id="targetFileName">تغيير امتداد الملف</h3>
-            <p style="font-size: 0.8rem; color: var(--text-muted);">أدخل الامتداد الجديد (مثال: pdf, jpg, mp4)</p>
-            <input type="text" id="newExtInput" placeholder="مثلاً: pdf">
-            <div style="display: flex; gap: 10px;">
-                <button onclick="closeModal()" style="flex:1; padding: 12px; border:none; border-radius: 12px;">إلغاء</button>
-                <button onclick="applyConversion()" style="flex:1; padding: 12px; border:none; border-radius: 12px; background: var(--accent); color:#fff;">تغيير وحفظ</button>
+    <div id="nav-folders" class="tab-content hidden">
+        <header class="ios-header"><h1>المجلدات</h1></header>
+        <div class="ios-group" id="folder-list">
+            <div class="ios-row">
+                <div class="icon-box" style="background: var(--ios-blue);"><i class="fas fa-folder"></i></div>
+                <div class="row-label">المجلد الرئيسي</div>
+                <i class="fas fa-chevron-left chevron"></i>
             </div>
         </div>
     </div>
 
-    <div class="modal" id="linkModal">
-        <div class="modal-box">
-            <i class="fas fa-link" style="font-size: 2rem; color: var(--accent);"></i>
-            <h3>رابط التحميل المباشر</h3>
-            <div id="directLinkArea" style="background:#f0f0f0; padding:15px; border-radius:12px; word-break: break-all; margin:15px 0; font-size:0.9rem;"></div>
-            <button onclick="copyLink()" style="width:100%; padding: 12px; border:none; border-radius: 12px; background: var(--accent); color:#fff;">نسخ الرابط</button>
+    <div id="nav-dev" class="tab-content hidden">
+        <header class="ios-header"><h1>المطور</h1></header>
+        <div class="dev-header">
+            <div class="dev-avatar"><i class="fas fa-user-tie"></i></div>
+            <h2 style="margin:0">المطور الحسني</h2>
+            <p style="color:var(--ios-gray)">خبير برمجيات وتطوير أدوات</p>
+        </div>
+        <div class="ios-group">
+            <div class="ios-row">
+                <div class="icon-box" style="background: #333;"><i class="fab fa-github"></i></div>
+                <div class="row-label">حساب GitHub</div>
+                <i class="fas fa-external-link-alt chevron"></i>
+            </div>
+            <div class="ios-row">
+                <div class="icon-box" style="background: #0088cc;"><i class="fab fa-telegram"></i></div>
+                <div class="row-label">قناة التليجرام</div>
+                <i class="fas fa-external-link-alt chevron"></i>
+            </div>
         </div>
     </div>
 
-    <nav class="bottom-bar">
-        <div class="nav-item active"><i class="fas fa-folder"></i><span>الرئيسية</span></div>
-        <button class="add-btn" onclick="triggerUpload()"><i class="fas fa-plus"></i></button>
-        <div class="nav-item"><i class="fas fa-cloud"></i><span>السحابة</span></div>
-        <input type="file" id="fileInput" hidden onchange="handleFile(event)">
+    <!-- نافذة تحويل الصيغة -->
+    <div class="ios-modal" id="modal-convert">
+        <div class="modal-sheet">
+            <h3 style="margin-top:0">تغيير الامتداد</h3>
+            <input type="text" class="ios-input" id="ext-input" placeholder="مثلاً: jpg, pdf, mp4">
+            <button class="ios-btn-main" onclick="confirmConvert()">حفظ التغيير</button>
+            <button class="ios-btn-main" style="background:none; color:var(--ios-red); margin-top:10px" onclick="closeModal()">إلغاء</button>
+        </div>
+    </div>
+
+    <nav class="tab-bar">
+        <div class="tab-item active" onclick="switchTab('nav-files', this)"><i class="fas fa-file"></i><span>ملفاتي</span></div>
+        <div class="tab-item" onclick="switchTab('nav-folders', this)"><i class="fas fa-folder"></i><span>مجلدات</span></div>
+        <div class="tab-item" onclick="triggerUpload()"><i class="fas fa-plus-circle" style="color:var(--ios-blue)"></i><span>إضافة</span></div>
+        <div class="tab-item" onclick="switchTab('nav-dev', this)"><i class="fas fa-code"></i><span>المطور</span></div>
+        <input type="file" id="file-uploader" hidden onchange="handleFileUpload(event)">
     </nav>
 
     <script>
         let files = [];
-        let currentEditingId = null;
+        let clipboard = null;
+        let selectedFileId = null;
 
-        function triggerUpload() { document.getElementById('fileInput').click(); }
+        function switchTab(id, el) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+        }
 
-        function handleFile(event) {
+        function triggerUpload() { document.getElementById('file-uploader').click(); }
+
+        function handleFileUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
 
-            const fileObj = {
+            const newFile = {
                 id: Date.now(),
                 name: file.name,
                 size: (file.size / 1024).toFixed(1) + " KB",
                 type: file.name.split('.').pop(),
-                link: `https://download.filemaster.pro/u/${Math.random().toString(36).substring(7)}`
+                blobUrl: URL.createObjectURL(file) // رابط حقيقي للتحميل
             };
 
-            files.push(fileObj);
+            files.push(newFile);
             renderFiles();
         }
 
         function renderFiles() {
-            const list = document.getElementById('fileList');
-            list.innerHTML = files.length ? '' : '<div style="text-align:center; margin-top:50px; color:#8e8e93;">لا توجد ملفات حالياً</div>';
-            
-            files.forEach(file => {
-                list.innerHTML += `
-                    <div class="file-card">
-                        <div class="file-icon"><i class="fas fa-file-code"></i></div>
-                        <div class="file-info">
-                            <span class="file-name">${file.name}</span>
-                            <span class="file-meta">${file.size} • ${file.type.toUpperCase()}</span>
-                            <br><span class="link-badge"><i class="fas fa-globe"></i> رابط مباشر متاح</span>
+            const container = document.getElementById('file-list');
+            if (files.length === 0) {
+                container.innerHTML = `<div style="padding: 40px; text-align: center; color: var(--ios-gray);">لا توجد ملفات.</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            files.forEach(f => {
+                container.innerHTML += `
+                    <div class="file-wrapper">
+                        <div class="ios-row" onclick="toggleActions(${f.id}, this)">
+                            <div class="icon-box" style="background: ${getColor(f.type)};">
+                                <i class="fas ${getIcon(f.type)}"></i>
+                            </div>
+                            <div class="row-label">${f.name}</div>
+                            <div class="row-value">${f.size}</div>
+                            <i class="fas fa-chevron-left chevron" style="margin-right:10px"></i>
                         </div>
-                        <div class="file-actions">
-                            <button class="action-btn" onclick="showLink('${file.link}')" title="رابط التحميل"><i class="fas fa-download"></i></button>
-                            <button class="action-btn" onclick="openConvertModal(${file.id})" title="تغيير الامتداد"><i class="fas fa-exchange-alt"></i></button>
-                            <button class="action-btn delete" onclick="deleteFile(${file.id})"><i class="fas fa-trash-alt"></i></button>
+                        <div class="actions-tray" id="tray-${f.id}">
+                            <button class="btn-action" onclick="copyFile(${f.id})"><i class="fas fa-copy"></i>نسخ</button>
+                            <button class="btn-action" onclick="openConvert(${f.id})"><i class="fas fa-edit"></i>تحويل</button>
+                            <button class="btn-action" onclick="downloadFile('${f.blobUrl}', '${f.name}')"><i class="fas fa-link"></i>رابط</button>
+                            <button class="btn-action" style="color:var(--ios-red)" onclick="deleteFile(${f.id})"><i class="fas fa-trash"></i>حذف</button>
                         </div>
                     </div>
                 `;
             });
         }
 
-        function openConvertModal(id) {
-            currentEditingId = id;
-            const file = files.find(f => f.id === id);
-            document.getElementById('targetFileName').innerText = `تحويل: ${file.name}`;
-            document.getElementById('convertModal').style.display = 'flex';
+        function toggleActions(id, el) {
+            const tray = document.getElementById(`tray-${id}`);
+            const isVisible = tray.style.display === 'flex';
+            document.querySelectorAll('.actions-tray').forEach(t => t.style.display = 'none');
+            tray.style.display = isVisible ? 'none' : 'flex';
         }
 
-        function applyConversion() {
-            const newExt = document.getElementById('newExtInput').value.trim().replace('.', '');
-            if (!newExt) return;
+        function downloadFile(url, name) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = name;
+            a.click();
+            alert("تم توليد الرابط المباشر وبدأ التحميل!");
+        }
 
+        function copyFile(id) {
+            clipboard = {...files.find(f => f.id === id), id: Date.now()};
+            alert("تم النسخ إلى الحافظة! يمكنك لصق الملف الآن.");
+            // إضافة خيار لصق وهمي
+            const container = document.getElementById('file-list');
+            container.innerHTML += `<div class="ios-row" style="color:var(--ios-blue)" onclick="pasteFile()"><i class="fas fa-paste" style="margin-left:10px"></i> لصق الملف المنسوخ هنا...</div>`;
+        }
+
+        function pasteFile() {
+            if(clipboard) {
+                files.push(clipboard);
+                clipboard = null;
+                renderFiles();
+            }
+        }
+
+        function openConvert(id) {
+            selectedFileId = id;
+            document.getElementById('modal-convert').style.display = 'flex';
+        }
+
+        function confirmConvert() {
+            const newExt = document.getElementById('ext-input').value.trim();
+            if(!newExt) return;
+            
             files = files.map(f => {
-                if (f.id === currentEditingId) {
-                    let baseName = f.name.substring(0, f.name.lastIndexOf('.'));
-                    return { ...f, name: baseName + '.' + newExt, type: newExt };
+                if(f.id === selectedFileId) {
+                    let base = f.name.substring(0, f.name.lastIndexOf('.'));
+                    return {...f, name: base + '.' + newExt, type: newExt};
                 }
                 return f;
             });
-
             closeModal();
             renderFiles();
-            alert("تم تغيير الامتداد بنجاح! يمكنك الآن حفظ الملف بالصيغة الجديدة.");
-        }
-
-        function showLink(link) {
-            document.getElementById('directLinkArea').innerText = link;
-            document.getElementById('linkModal').style.display = 'flex';
         }
 
         function deleteFile(id) {
@@ -227,16 +301,16 @@
             renderFiles();
         }
 
-        function closeModal() {
-            document.getElementById('convertModal').style.display = 'none';
-            document.getElementById('linkModal').style.display = 'none';
+        function closeModal() { document.getElementById('modal-convert').style.display = 'none'; }
+
+        function getIcon(type) {
+            const icons = { jpg: 'fa-image', png: 'fa-image', mp4: 'fa-video', pdf: 'fa-file-pdf', zip: 'fa-file-archive' };
+            return icons[type.toLowerCase()] || 'fa-file';
         }
 
-        function copyLink() {
-            const link = document.getElementById('directLinkArea').innerText;
-            navigator.clipboard.writeText(link);
-            alert("تم نسخ رابط التحميل المباشر!");
-            closeModal();
+        function getColor(type) {
+            const colors = { jpg: '#FF9500', mp4: '#AF52DE', pdf: '#FF3B30', zip: '#8E8E93' };
+            return colors[type.toLowerCase()] || '#007AFF';
         }
     </script>
 </body>
