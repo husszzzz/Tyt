@@ -3,345 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HASSANY - PRO LEAGUE 2026</title>
+    <title>FileMaster Pro - مدير الملفات الذكي</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Oswald:wght@700&display=swap');
-        
-        :root { 
-            --primary: #ffd700; 
-            --secondary: #ff4444;
-            --glass: rgba(255, 255, 255, 0.05);
-            --glass-strong: rgba(0, 0, 0, 0.6);
-            --border: rgba(255, 255, 255, 0.1);
-            --neon-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap');
+
+        :root {
+            --accent: #007AFF; /* لون آيفون الأزرق */
+            --bg: #F2F2F7;
+            --card-bg: #FFFFFF;
+            --text-main: #1C1C1E;
+            --text-muted: #8E8E93;
+            --danger: #FF3B30;
+            --success: #34C759;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            background: radial-gradient(circle at top right, #1a1a1a, #000);
-            color: #fff; 
-            font-family: 'Cairo', sans-serif; 
-            margin: 0; 
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding-bottom: 80px; }
 
-        /* تأثير الخلفية المتحركة */
-        body::before {
-            content: "";
-            position: fixed;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.03) 0%, transparent 50%);
-            animation: rotateBg 20s linear infinite;
-            z-index: -1;
-        }
-        @keyframes rotateBg { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* الهيدر الجديد - Ultra Modern */
-        .top-bar {
-            background: var(--glass-strong);
+        /* الهيدر العلوي */
+        .app-header {
+            background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(20px);
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            position: sticky; top: 0; z-index: 1000;
+            padding: 20px;
+            position: sticky; top: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #D1D1D6;
         }
+        .app-header h1 { margin: 0; font-size: 1.5rem; font-weight: 800; }
 
-        .brand-logo { font-family: 'Oswald', sans-serif; letter-spacing: 2px; }
-        .brand-logo span { color: var(--secondary); font-size: 0.7rem; display: block; line-height: 1; }
-        .brand-logo h1 { margin: 0; font-size: 1.4rem; color: #fff; font-weight: 900; }
+        /* منطقة الملفات */
+        .container { padding: 15px; }
+        .file-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
 
-        #countdown {
-            background: linear-gradient(45deg, #000, #222);
-            padding: 8px 15px;
-            border-radius: 50px;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            font-family: monospace;
-            font-weight: 900;
-            box-shadow: var(--neon-shadow);
-        }
-
-        /* شريط التنقل العلوي الأنيق */
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
+        /* بطاقة الملف */
+        .file-card {
+            background: var(--card-bg);
+            border-radius: 16px;
             padding: 15px;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-        .nav-btn {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            color: #ccc;
-            padding: 10px 20px;
-            border-radius: 15px;
-            cursor: pointer;
+            display: flex; align-items: center; gap: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             transition: 0.3s;
-            font-weight: 700;
-            display: flex; align-items: center; gap: 8px;
+            animation: slideIn 0.4s ease-out;
         }
-        .nav-btn.active {
-            background: var(--primary);
-            color: #000;
-            border-color: var(--primary);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .file-icon {
+            width: 50px; height: 50px; background: #E5E5EA;
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; color: var(--accent);
         }
 
-        /* الحاويات */
-        .content-area { padding: 0 15px 50px 15px; max-width: 600px; margin: auto; }
-        
-        .card {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 25px;
-            padding: 20px;
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
+        .file-info { flex: 1; }
+        .file-name { font-weight: 600; font-size: 1rem; display: block; }
+        .file-meta { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* قائمة الإجراءات */
+        .file-actions { display: flex; gap: 10px; }
+        .action-btn {
+            background: none; border: none; font-size: 1.2rem; cursor: pointer;
+            color: var(--text-muted); padding: 5px;
+        }
+        .action-btn:hover { color: var(--accent); }
+        .action-btn.delete:hover { color: var(--danger); }
+
+        /* نافذة تحويل الصيغة */
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); 
+            display: none; align-items: center; justify-content: center; z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        .modal-box {
+            background: var(--card-bg); width: 90%; max-width: 400px;
+            border-radius: 24px; padding: 25px; text-align: center;
+        }
+        .modal-box input {
+            width: 100%; padding: 12px; margin: 15px 0; border-radius: 10px;
+            border: 1px solid #D1D1D6; font-family: 'Cairo';
         }
 
-        .card-header { 
-            display: flex; align-items: center; gap: 10px; margin-bottom: 20px; 
-            border-right: 4px solid var(--primary); padding-right: 10px;
+        /* شريط التحكم السفلي */
+        .bottom-bar {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 500px; background: #1C1C1E; border-radius: 50px;
+            padding: 10px 20px; display: flex; justify-content: space-around;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 500;
         }
-        .card-header h2 { margin: 0; font-size: 1.1rem; font-weight: 900; }
+        .nav-item { color: #fff; text-align: center; cursor: pointer; opacity: 0.7; }
+        .nav-item.active { opacity: 1; color: var(--accent); }
+        .nav-item i { font-size: 1.4rem; display: block; }
+        .nav-item span { font-size: 0.7rem; font-weight: bold; }
 
-        /* ترتيب الدوري الجديد - نظام الصفوف المتفاعلة */
-        .league-row {
-            display: grid;
-            grid-template-columns: 40px 1fr 40px 40px;
-            align-items: center;
-            background: rgba(255,255,255,0.03);
-            margin-bottom: 8px;
-            padding: 12px;
-            border-radius: 15px;
-            border: 1px solid transparent;
-            transition: 0.3s;
-        }
-        .league-row:hover { transform: scale(1.02); background: rgba(255,255,255,0.07); }
-        .league-row.leader {
-            border-color: var(--primary);
-            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
-            position: relative;
-        }
-        .league-row.leader::after {
-            content: "👑"; position: absolute; left: 10px; font-size: 0.8rem;
+        /* زر الإضافة العائم */
+        .add-btn {
+            width: 55px; height: 55px; background: var(--accent); color: #fff;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; border: none; cursor: pointer; box-shadow: 0 5px 15px rgba(0,122,255,0.4);
+            transform: translateY(-30px);
         }
 
-        /* بطاقات اللاعبين والمباريات */
-        .match-ticket {
-            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.3));
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 15px;
-            text-align: center;
-            border-left: 5px solid var(--primary);
+        .link-badge {
+            background: #E8F2FF; color: var(--accent); padding: 2px 8px;
+            border-radius: 6px; font-size: 0.7rem; font-weight: bold; margin-top: 5px; display: inline-block;
         }
-        
-        .player-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: var(--glass);
-            padding: 12px;
-            border-radius: 18px;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-        .player-item i { color: var(--primary); background: rgba(0,0,0,0.3); padding: 10px; border-radius: 12px; }
-
-        /* شريط الأخبار المتحرك سفلياً */
-        .ticker-bottom {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: var(--secondary); color: #fff;
-            padding: 5px 0; font-weight: 900; font-size: 0.8rem;
-            z-index: 2000; overflow: hidden;
-        }
-        .ticker-move { display: inline-block; white-space: nowrap; animation: moveNews 20s linear infinite; }
-        @keyframes moveNews { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-
-        /* نافذة المعلومات */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: #111; border: 2px solid var(--primary); padding: 30px; border-radius: 30px; width: 100%; text-align: center; }
-
-        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div class="top-bar">
-    <div class="brand-logo">
-        <span>POWERED BY</span>
-        <h1>HASSANY 365</h1>
+    <header class="app-header">
+        <h1>ملفاتي</h1>
+        <div style="color: var(--accent); font-weight: 600;"><i class="fas fa-search"></i></div>
+    </header>
+
+    <div class="container">
+        <div id="fileList" class="file-grid">
+            </div>
     </div>
-    <div id="countdown">00:00:00</div>
-</div>
 
-<nav class="nav-tabs">
-    <div class="nav-btn active" onclick="switchPage('home', this)"><i class="fas fa-th-large"></i> الرئيسية</div>
-    <div class="nav-btn" onclick="switchPage('matches', this)"><i class="fas fa-gamepad"></i> المباريات</div>
-    <div class="nav-btn" onclick="switchPage('awards', this)"><i class="fas fa-crown"></i> الجوائز</div>
-    <div class="nav-btn" onclick="switchPage('players', this)"><i class="fas fa-users"></i> اللاعبين</div>
-</nav>
-
-<div class="content-area">
-    <!-- الصفحة الرئيسية -->
-    <div id="home-page">
-        <div class="card">
-            <div class="card-header"><i class="fas fa-chart-line"></i><h2>ترتيب الصدارة</h2></div>
-            <div id="league-content"></div>
-        </div>
-        
-        <div class="card">
-            <div class="card-header"><i class="fas fa-globe-americas"></i><h2>التصنيف العالمي</h2></div>
-            <div id="world-rank-content"></div>
+    <div class="modal" id="convertModal">
+        <div class="modal-box">
+            <h3 id="targetFileName">تغيير امتداد الملف</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">أدخل الامتداد الجديد (مثال: pdf, jpg, mp4)</p>
+            <input type="text" id="newExtInput" placeholder="مثلاً: pdf">
+            <div style="display: flex; gap: 10px;">
+                <button onclick="closeModal()" style="flex:1; padding: 12px; border:none; border-radius: 12px;">إلغاء</button>
+                <button onclick="applyConversion()" style="flex:1; padding: 12px; border:none; border-radius: 12px; background: var(--accent); color:#fff;">تغيير وحفظ</button>
+            </div>
         </div>
     </div>
 
-    <!-- صفحة المباريات -->
-    <div id="matches-page" class="hidden">
-        <div class="card">
-            <div class="card-header"><i class="fas fa-calendar-day"></i><h2>المواجهات القادمة</h2></div>
-            <div id="matches-content"></div>
+    <div class="modal" id="linkModal">
+        <div class="modal-box">
+            <i class="fas fa-link" style="font-size: 2rem; color: var(--accent);"></i>
+            <h3>رابط التحميل المباشر</h3>
+            <div id="directLinkArea" style="background:#f0f0f0; padding:15px; border-radius:12px; word-break: break-all; margin:15px 0; font-size:0.9rem;"></div>
+            <button onclick="copyLink()" style="width:100%; padding: 12px; border:none; border-radius: 12px; background: var(--accent); color:#fff;">نسخ الرابط</button>
         </div>
     </div>
 
-    <!-- صفحة الجوائز -->
-    <div id="awards-page" class="hidden">
-        <div id="motm-content"></div>
-        <div class="card">
-            <div class="card-header"><i class="fas fa-fire"></i><h2>قائمة الهدافين</h2></div>
-            <div id="scorers-content"></div>
-        </div>
-    </div>
+    <nav class="bottom-bar">
+        <div class="nav-item active"><i class="fas fa-folder"></i><span>الرئيسية</span></div>
+        <button class="add-btn" onclick="triggerUpload()"><i class="fas fa-plus"></i></button>
+        <div class="nav-item"><i class="fas fa-cloud"></i><span>السحابة</span></div>
+        <input type="file" id="fileInput" hidden onchange="handleFile(event)">
+    </nav>
 
-    <!-- صفحة اللاعبين -->
-    <div id="players-page" class="hidden">
-        <div id="players-content"></div>
-    </div>
-</div>
+    <script>
+        let files = [];
+        let currentEditingId = null;
 
-<div class="ticker-bottom">
-    <div class="ticker-move" id="news-text">جاري جلب آخر التحديثات من الخادم...</div>
-</div>
+        function triggerUpload() { document.getElementById('fileInput').click(); }
 
-<div class="modal" id="pModal" onclick="this.style.display='none'">
-    <div class="modal-content">
-        <h2 id="mName" style="color:var(--primary)"></h2>
-        <p id="mInfo" style="color:#bbb"></p>
-    </div>
-</div>
+        function handleFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-<script>
-    const url = "https://docs.google.com/spreadsheets/d/1-MToSjxxd5GTvmghx0MxkZJmU0gXOZbDPCt8-Q45Db8/export?format=csv";
+            const fileObj = {
+                id: Date.now(),
+                name: file.name,
+                size: (file.size / 1024).toFixed(1) + " KB",
+                type: file.name.split('.').pop(),
+                link: `https://download.filemaster.pro/u/${Math.random().toString(36).substring(7)}`
+            };
 
-    function switchPage(pageId, btn) {
-        ['home', 'matches', 'awards', 'players'].forEach(id => {
-            document.getElementById(id + '-page').classList.add('hidden');
-        });
-        document.getElementById(pageId + '-page').classList.remove('hidden');
-        
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        window.scrollTo(0,0);
-    }
-
-    function openP(n, i) { 
-        document.getElementById('mName').innerText = n; 
-        document.getElementById('mInfo').innerText = i; 
-        document.getElementById('pModal').style.display = 'flex'; 
-    }
-
-    async function fetchData() {
-        try {
-            const r = await fetch(url);
-            const data = await r.text();
-            const rows = data.split('\n').map(row => row.split(',').map(c => c.replace(/"/g, '').trim()));
-
-            // أخبار
-            document.getElementById('news-text').innerText = rows[1][21] || "HASSANY LEAGUE 2026";
-
-            // ترتيب الدوري (تصميم الصفوف)
-            let teams = rows.slice(1).map(r => ({ n: r[0], p: r[1], s: parseInt(r[5]) || 0 }))
-                        .filter(x => x.n && x.n !== "الفريق").sort((a,b) => b.s - a.s);
-            
-            let leagueHTML = `<div style="display:grid; grid-template-columns: 40px 1fr 40px 40px; padding: 10px; color:#777; font-size:0.8rem"><div>#</div><div>الفريق</div><div>لعب</div><div>نقاط</div></div>`;
-            teams.forEach((t, i) => {
-                leagueHTML += `
-                <div class="league-row ${i==0?'leader':''}">
-                    <div style="font-weight:900; color:${i==0?'var(--primary)':'#777'}">${i+1}</div>
-                    <div style="font-weight:700">${t.n}</div>
-                    <div>${t.p}</div>
-                    <div style="color:var(--primary); font-weight:900">${t.s}</div>
-                </div>`;
-            });
-            document.getElementById('league-content').innerHTML = leagueHTML;
-
-            // التصنيف العالمي
-            let wrHTML = "";
-            for(let i=1; i<=5; i++) if(rows[i][8]) {
-                wrHTML += `<div class="player-item"><i>${i}</i> <b>${rows[i][8]}</b> <span style="margin-right:auto; color:var(--primary)">${rows[i][9]}</span></div>`;
-            }
-            document.getElementById('world-rank-content').innerHTML = wrHTML;
-
-            // المباريات
-            let mxHTML = "";
-            for(let i=1; i<=15; i++) if(rows[i][17]) {
-                mxHTML += `<div class="match-ticket">
-                    <div style="color:var(--primary); font-size:0.7rem; margin-bottom:10px;">${rows[i][20]}</div>
-                    <div style="font-size:1.2rem; font-weight:900">${rows[i][17]} VS ${rows[i][18]}</div>
-                    <div style="color:#777; font-size:0.8rem; margin-top:5px">${rows[i][19]}</div>
-                </div>`;
-            }
-            document.getElementById('matches-content').innerHTML = mxHTML;
-
-            // الجوائز ورجل المباراة
-            if(rows[1][16]) {
-                document.getElementById('motm-content').innerHTML = `
-                <div class="card" style="border-color:var(--primary); background:linear-gradient(to bottom, rgba(255,215,0,0.1), transparent)">
-                    <div class="card-header" style="border:none; justify-content:center; flex-direction:column">
-                        <img src="${rows[0][15]}" style="width:100px; height:100px; border-radius:50%; border:3px solid var(--primary); object-fit:cover">
-                        <span style="color:var(--primary); font-size:0.8rem; letter-spacing:2px; margin-top:10px">PLAYER OF THE ROUND</span>
-                        <h2 style="font-size:1.8rem">${rows[1][16]}</h2>
-                    </div>
-                </div>`;
-            }
-
-            // اللاعبين
-            let plHTML = "";
-            for(let i=1; i<=12; i++) if(rows[i][24]) {
-                plHTML += `<div class="player-item" onclick="openP('${rows[i][24]}', '${rows[i][25]}')">
-                    <i class="fas fa-shield-halved"></i>
-                    <span>${rows[i][24]}</span>
-                    <i class="fas fa-chevron-left" style="margin-right:auto; font-size:0.8rem; opacity:0.3"></i>
-                </div>`;
-            }
-            document.getElementById('players-content').innerHTML = plHTML;
-
-        } catch (e) { console.log(e); }
-    }
-
-    // العد التنازلي
-    setInterval(() => {
-        const target = new Date("Apr 14, 2026 16:00:00").getTime();
-        const diff = target - new Date().getTime();
-        if (diff < 0) { document.getElementById("countdown").innerText = "LIVE NOW"; }
-        else {
-            const h = Math.floor(diff / (1000*60*60));
-            const m = Math.floor((diff % (1000*60*60)) / (1000*60));
-            const s = Math.floor((diff % (1000*60)) / 1000);
-            document.getElementById("countdown").innerText = `${h}:${m}:${s}`;
+            files.push(fileObj);
+            renderFiles();
         }
-    }, 1000);
 
-    fetchData();
-    setInterval(fetchData, 30000);
-</script>
+        function renderFiles() {
+            const list = document.getElementById('fileList');
+            list.innerHTML = files.length ? '' : '<div style="text-align:center; margin-top:50px; color:#8e8e93;">لا توجد ملفات حالياً</div>';
+            
+            files.forEach(file => {
+                list.innerHTML += `
+                    <div class="file-card">
+                        <div class="file-icon"><i class="fas fa-file-code"></i></div>
+                        <div class="file-info">
+                            <span class="file-name">${file.name}</span>
+                            <span class="file-meta">${file.size} • ${file.type.toUpperCase()}</span>
+                            <br><span class="link-badge"><i class="fas fa-globe"></i> رابط مباشر متاح</span>
+                        </div>
+                        <div class="file-actions">
+                            <button class="action-btn" onclick="showLink('${file.link}')" title="رابط التحميل"><i class="fas fa-download"></i></button>
+                            <button class="action-btn" onclick="openConvertModal(${file.id})" title="تغيير الامتداد"><i class="fas fa-exchange-alt"></i></button>
+                            <button class="action-btn delete" onclick="deleteFile(${file.id})"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
 
+        function openConvertModal(id) {
+            currentEditingId = id;
+            const file = files.find(f => f.id === id);
+            document.getElementById('targetFileName').innerText = `تحويل: ${file.name}`;
+            document.getElementById('convertModal').style.display = 'flex';
+        }
+
+        function applyConversion() {
+            const newExt = document.getElementById('newExtInput').value.trim().replace('.', '');
+            if (!newExt) return;
+
+            files = files.map(f => {
+                if (f.id === currentEditingId) {
+                    let baseName = f.name.substring(0, f.name.lastIndexOf('.'));
+                    return { ...f, name: baseName + '.' + newExt, type: newExt };
+                }
+                return f;
+            });
+
+            closeModal();
+            renderFiles();
+            alert("تم تغيير الامتداد بنجاح! يمكنك الآن حفظ الملف بالصيغة الجديدة.");
+        }
+
+        function showLink(link) {
+            document.getElementById('directLinkArea').innerText = link;
+            document.getElementById('linkModal').style.display = 'flex';
+        }
+
+        function deleteFile(id) {
+            files = files.filter(f => f.id !== id);
+            renderFiles();
+        }
+
+        function closeModal() {
+            document.getElementById('convertModal').style.display = 'none';
+            document.getElementById('linkModal').style.display = 'none';
+        }
+
+        function copyLink() {
+            const link = document.getElementById('directLinkArea').innerText;
+            navigator.clipboard.writeText(link);
+            alert("تم نسخ رابط التحميل المباشر!");
+            closeModal();
+        }
+    </script>
 </body>
 </html>
