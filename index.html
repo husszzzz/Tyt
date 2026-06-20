@@ -2,244 +2,106 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hassany File Manager Pro</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق سينمانا - Cinemana</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-
-        :root {
-            --ios-blue: #007AFF;
-            --ios-bg: #F2F2F7;
-            --ios-card: #FFFFFF;
-            --ios-gray: #8E8E93;
-            --ios-red: #FF3B30;
-            --ios-orange: #FF9500;
+        body {
+            background-color: #111116;
+            color: #ffffff;
+            font-family: system-ui, -apple-system, sans-serif;
         }
-
-        body { font-family: 'Cairo', sans-serif; background-color: var(--ios-bg); margin: 0; padding-bottom: 100px; overflow-x: hidden; }
-        
-        /* Header iOS Style */
-        .header { padding: 50px 20px 10px; background: var(--ios-bg); position: sticky; top: 0; z-index: 10; }
-        .header h1 { font-size: 32px; font-weight: 700; margin: 0; }
-        .header-actions { display: flex; gap: 10px; margin-top: 10px; }
-
-        /* Groups & Rows */
-        .ios-group { background: var(--ios-card); margin: 15px; border-radius: 12px; overflow: hidden; }
-        .ios-row { 
-            display: flex; align-items: center; padding: 12px 16px; 
-            border-bottom: 0.5px solid #E5E5EA; cursor: pointer; transition: 0.2s;
+        .glass-container {
+            background: rgba(30, 30, 38, 0.6);
+            border: 1px solid rgba(255, 50, 50, 0.2);
+            border-radius: 1.5rem;
+            backdrop-filter: blur(10px);
         }
-        .ios-row:active { background: #E5E5EA; }
-        .ios-row:last-child { border-bottom: none; }
-
-        .icon-box {
-            width: 30px; height: 30px; border-radius: 7px;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; margin-left: 12px; font-size: 14px;
+        .glow-effect {
+            box-shadow: 0 0 25px rgba(220, 38, 38, 0.5);
         }
-
-        .label { flex: 1; font-size: 17px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .meta { color: var(--ios-gray); font-size: 14px; }
-
-        /* Actions Tray */
-        .actions-tray { 
-            display: none; background: #F9F9F9; padding: 15px; 
-            justify-content: space-around; border-bottom: 0.5px solid #D1D1D6;
-            animation: fadeIn 0.2s;
+        .bg-red-gradient {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
         }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .action-btn { 
-            background: none; border: none; color: var(--ios-blue); 
-            display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 12px; font-family: 'Cairo';
-        }
-
-        /* Modals */
-        .modal { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.4); 
-            display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px;
-        }
-        .modal-content { 
-            background: #fff; width: 100%; max-width: 300px; 
-            border-radius: 14px; padding: 20px; text-align: center;
-        }
-        .ios-input { 
-            width: 100%; border: 1px solid #ddd; padding: 10px; 
-            border-radius: 8px; margin: 15px 0; font-family: 'Cairo'; outline: none;
-        }
-        .ios-btn { 
-            width: 100%; background: var(--ios-blue); color: #fff; 
-            border: none; padding: 12px; border-radius: 10px; font-weight: 600;
-        }
-
-        /* Tabs */
-        .tab-bar { 
-            position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.9); 
-            backdrop-filter: blur(10px); display: flex; border-top: 0.5px solid #B2B2B2; padding: 10px 0 25px;
-        }
-        .tab-item { flex: 1; text-align: center; color: var(--ios-gray); font-size: 11px; }
-        .tab-item.active { color: var(--ios-blue); }
-        .tab-item i { font-size: 20px; display: block; margin-bottom: 2px; }
-
-        .hidden { display: none !important; }
     </style>
 </head>
-<body>
+<body class="flex flex-col items-center justify-center min-h-screen p-5">
 
-    <!-- قسم الملفات -->
-    <div id="tab-files">
-        <div class="header">
-            <h1>ملفاتي</h1>
-            <div class="header-actions">
-                <button onclick="triggerUpload()" class="ios-btn" style="width: auto; padding: 5px 15px; font-size: 14px;"><i class="fas fa-file-upload"></i> ملف</button>
-                <button onclick="showPrompt('folder')" class="ios-btn" style="width: auto; padding: 5px 15px; font-size: 14px; background: var(--ios-orange);"><i class="fas fa-folder-plus"></i> مجلد</button>
+    <div class="glass-container max-w-md w-full p-6 text-center relative overflow-hidden mt-8 shadow-2xl">
+        
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-red-600 rounded-full blur-[80px] opacity-30"></div>
+
+        <img src="https://l.top4top.io/p_3823vgthk1.jpeg" alt="Cinemana Logo" class="w-24 h-24 mx-auto rounded-[1.5rem] mb-4 relative z-10 glow-effect border-2 border-red-500 object-cover">
+
+        <div class="bg-red-600 text-white text-[11px] font-bold px-5 py-1 rounded-full inline-block mb-3 relative z-10 tracking-wider">
+            CINEMANA IOS
+        </div>
+
+        <h1 class="text-2xl font-bold mb-2 relative z-10">تطبيق سينمانا Cinemana</h1>
+        <p class="text-gray-400 text-sm mb-5 relative z-10">أكبر منصة لمشاهدة الأفلام والمسلسلات مجاناً</p>
+
+        <div class="bg-red-600 text-white text-xs font-bold px-6 py-2 rounded-full inline-flex items-center gap-2 mb-6 relative z-10 shadow-lg shadow-red-500/30">
+            <span>✦</span> شهادة مجانية جديدة <span>✦</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 mb-6 relative z-10">
+            <div class="border border-gray-700/50 rounded-2xl p-3 bg-gray-800/40">
+                <div class="text-red-500 font-bold text-sm mb-1">VIP</div>
+                <div class="text-gray-400 text-[10px]">إصدار بدون إعلانات</div>
+            </div>
+            <div class="border border-gray-700/50 rounded-2xl p-3 bg-gray-800/40">
+                <div class="text-red-500 font-bold text-sm mb-1">iOS</div>
+                <div class="text-gray-400 text-[10px]">متوافق بالكامل</div>
+            </div>
+            <div class="border border-gray-700/50 rounded-2xl p-3 bg-gray-800/40">
+                <div class="text-red-500 font-bold text-sm mb-1">4K Ultra</div>
+                <div class="text-gray-400 text-[10px]">أعلى جودة</div>
             </div>
         </div>
-        <div class="ios-group" id="main-list">
-            <!-- الملفات والمجلدات هنا -->
-        </div>
+
+        <a href="#" class="block w-full bg-red-gradient text-white font-bold py-3.5 rounded-2xl mb-2 glow-effect transition-transform hover:scale-[1.02] relative z-10">
+            📦 ابدأ التثبيت الفوري الآن
+        </a>
     </div>
 
-    <!-- قسم المطور -->
-    <div id="tab-dev" class="hidden">
-        <div class="header"><h1>المطور</h1></div>
-        <div style="text-align: center; padding: 40px 20px;">
-            <div style="width: 80px; height: 80px; background: var(--ios-blue); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 35px;">
-                <i class="fas fa-code"></i>
+    <a href="#" class="max-w-md w-full mt-4 glass-container p-4 flex items-center justify-between transition-colors hover:bg-gray-800/60">
+        <div class="text-right">
+            <div class="font-bold text-sm mb-1 text-white">تخطي مشكلة "مطور مؤسسة غير موثوق"</div>
+            <div class="text-gray-400 text-xs">اضغط هنا لمشاهدة شرح التثبيت السريع</div>
+        </div>
+        <div class="bg-red-900/50 p-2.5 rounded-xl border border-red-500/30">
+           🛡️
+        </div>
+    </a>
+
+    <div class="max-w-md w-full mt-8 mb-4">
+        <h2 class="text-lg font-bold mb-4 text-center text-white">ميزات نسخة سينمانا المخصصة</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-300">
+            <div class="glass-container p-3.5 flex items-center gap-2">
+                <span class="text-red-500">✔</span> مشاهدة بدون أي إعلانات مزعجة
             </div>
-            <h2 style="margin: 0;">المطور الحسني</h2>
-            <p style="color: var(--ios-gray);">خبير في تطوير الأدوات البرمجية</p>
+            <div class="glass-container p-3.5 flex items-center gap-2">
+                <span class="text-red-500">✔</span> تحميل الحلقات والأفلام مباشرة للجهاز
+            </div>
+            <div class="glass-container p-3.5 flex items-center gap-2">
+                <span class="text-red-500">✔</span> سيرفرات سريعة جداً تدعم جميع الشبكات
+            </div>
+            <div class="glass-container p-3.5 flex items-center gap-2">
+                <span class="text-red-500">✔</span> ترجمة احترافية مدمجة متعددة اللغات
+            </div>
+            <div class="glass-container p-3.5 flex items-center gap-2">
+                <span class="text-red-500">✔</span> تنبيهات فورية عند نزول الحلقات الجديدة
+            </div>
+            <div class="glass-container p-3.5 flex items-center gap-2">
+                <span class="text-red-500">✔</span> واجهة منسقة تدعم الوضع الليلي السينمائي
+            </div>
         </div>
     </div>
 
-    <!-- نافذة الإدخال (تغيير اسم / مجلد / امتداد) -->
-    <div class="modal" id="ios-modal">
-        <div class="modal-content">
-            <h3 id="modal-title">تعديل</h3>
-            <input type="text" id="modal-input" class="ios-input">
-            <button class="ios-btn" onclick="handleModalSubmit()">تأكيد</button>
-            <button onclick="closeModal()" style="background:none; border:none; color:var(--ios-red); margin-top:10px; cursor:pointer;">إلغاء</button>
-        </div>
+    <div class="mt-8 text-center text-gray-500 text-xs pb-10">
+        <div class="font-bold text-gray-400 mb-1 tracking-widest">CINEMANA PREMIUM</div>
+        تم التطوير والبرمجة بواسطة <span class="text-red-500 font-bold text-sm">hassanyIPA</span>
     </div>
 
-    <nav class="tab-bar">
-        <div class="tab-item active" onclick="switchTab('files', this)"><i class="fas fa-folder-open"></i><span>الرئيسية</span></div>
-        <div class="tab-item" onclick="switchTab('dev', this)"><i class="fas fa-user-shield"></i><span>المطور</span></div>
-        <input type="file" id="file-input" hidden onchange="processFile(event)">
-    </nav>
-
-    <script>
-        let items = []; // تخزين الملفات والمجلدات
-        let currentAction = ''; 
-        let targetId = null;
-
-        function switchTab(tab, el) {
-            document.getElementById('tab-files').classList.toggle('hidden', tab !== 'files');
-            document.getElementById('tab-dev').classList.toggle('hidden', tab !== 'dev');
-            document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
-        }
-
-        function triggerUpload() { document.getElementById('file-input').click(); }
-
-        function processFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            items.push({
-                id: Date.now(),
-                type: 'file',
-                name: file.name,
-                size: (file.size / 1024).toFixed(1) + " KB",
-                content: file, // الاحتفاظ بالملف الأصلي
-                ext: file.name.split('.').pop()
-            });
-            render();
-        }
-
-        function render() {
-            const list = document.getElementById('main-list');
-            list.innerHTML = items.length ? '' : '<div style="padding:30px; text-align:center; color:gray;">لا يوجد محتوى</div>';
-            
-            items.forEach(item => {
-                const isFolder = item.type === 'folder';
-                list.innerHTML += `
-                    <div>
-                        <div class="ios-row" onclick="toggleTray(${item.id})">
-                            <div class="icon-box" style="background:${isFolder ? '#FFCC00' : '#007AFF'}">
-                                <i class="fas ${isFolder ? 'fa-folder' : 'fa-file'}"></i>
-                            </div>
-                            <div class="label">${item.name}</div>
-                            <div class="meta">${isFolder ? 'مجلد' : item.size}</div>
-                        </div>
-                        <div class="actions-tray" id="tray-${item.id}">
-                            ${!isFolder ? `<button class="action-btn" onclick="downloadFile(${item.id})"><i class="fas fa-download"></i>رابط</button>` : ''}
-                            <button class="action-btn" onclick="showPrompt('rename', ${item.id})"><i class="fas fa-edit"></i>تسمية</button>
-                            ${!isFolder ? `<button class="action-btn" onclick="showPrompt('convert', ${item.id})"><i class="fas fa-exchange-alt"></i>امتداد</button>` : ''}
-                            <button class="action-btn" style="color:var(--ios-red)" onclick="deleteItem(${item.id})"><i class="fas fa-trash"></i>حذف</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function toggleTray(id) {
-            const tray = document.getElementById(`tray-${id}`);
-            const currentStatus = tray.style.display;
-            document.querySelectorAll('.actions-tray').forEach(t => t.style.display = 'none');
-            tray.style.display = currentStatus === 'flex' ? 'none' : 'flex';
-        }
-
-        function showPrompt(type, id = null) {
-            currentAction = type;
-            targetId = id;
-            const titles = { folder: 'مجلد جديد', rename: 'تغيير الاسم', convert: 'تغيير الامتداد (مثلاً pdf)' };
-            document.getElementById('modal-title').innerText = titles[type];
-            document.getElementById('modal-input').value = '';
-            document.getElementById('ios-modal').style.display = 'flex';
-        }
-
-        function handleModalSubmit() {
-            const val = document.getElementById('modal-input').value.trim();
-            if (!val) return;
-
-            if (currentAction === 'folder') {
-                items.push({ id: Date.now(), type: 'folder', name: val });
-            } else if (currentAction === 'rename') {
-                const item = items.find(i => i.id === targetId);
-                item.name = val;
-            } else if (currentAction === 'convert') {
-                const item = items.find(i => i.id === targetId);
-                let base = item.name.includes('.') ? item.name.substring(0, item.name.lastIndexOf('.')) : item.name;
-                item.name = base + '.' + val.replace('.', '');
-                item.ext = val;
-            }
-            closeModal();
-            render();
-        }
-
-        function downloadFile(id) {
-            const item = items.find(i => i.id === id);
-            // الحل السحري: تحويل الملف إلى Blob "عام" لفرض الامتداد الجديد
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const blob = new Blob([e.target.result], { type: "application/octet-stream" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = item.name; // سيأخذ الاسم بالامتداد الجديد تماماً
-                a.click();
-                URL.revokeObjectURL(url);
-            };
-            reader.readAsArrayBuffer(item.content);
-        }
-
-        function deleteItem(id) {
-            items = items.filter(i => i.id !== id);
-            render();
-        }
-
-        function closeModal() { document.getElementById('ios-modal').style.display = 'none'; }
-    </script>
 </body>
 </html>
