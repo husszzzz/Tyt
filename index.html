@@ -1,402 +1,577 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>CINEMANA - تطبيق سينمانا</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
+<!DOCTYPE html><html lang="ar" dir="rtl"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>ESIGN NEW - ESIGN</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
 
-    :root {
-      --primary: #ff003c;
-      --accent: #ff4d00;
-      --glow: rgba(255, 0, 60, 0.35);
-      --bg: #06060a;
-      --panel: rgba(18, 14, 20, 0.75);
-      --border: rgba(255, 0, 60, 0.25);
-      --text: #f3f4f6;
-    }
+  :root {
+    --cyan: #00f2ff;
+    --gold: #ffd700;
+    --purple: #a855f7;
+    --bg: #05050a;
+    --panel: rgba(12, 12, 20, 0.85);
+    --border: rgba(0, 242, 255, 0.15);
+    --text: #e8f0fe;
+  }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    
-    body {
-      font-family: 'Tajawal', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* ===== BACKGROUND CANVAS ===== */
-    #bgCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  body {
+    font-family: 'Tajawal', 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-    /* ===== DRAG-DOWN CINEMA TOAST ===== */
-    #toast {
-      position: fixed; top: -150px; left: 50%; transform: translateX(-50%); z-index: 9999;
-      background: rgba(15, 10, 12, 0.9); border: 1px solid var(--primary); border-radius: 24px;
-      padding: 16px 24px; display: flex; align-items: center; gap: 16px;
-      box-shadow: 0 15px 35px var(--glow), inset 0 1px 1px rgba(255,255,255,0.1);
-      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-      transition: all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      opacity: 0; width: 92%; max-width: 450px;
-    }
-    #toast.show { top: 20px; opacity: 1; }
-    #toast.hide { top: -150px; opacity: 0; transition: all 0.5s ease-in; }
-    
-    .toast-icon { font-size: 30px; animation: moviePulse 1.5s infinite ease-in-out; }
-    
-    @keyframes moviePulse {
-      0%, 100% { filter: drop-shadow(0 0 2px var(--primary)); transform: scale(1); }
-      50% { filter: drop-shadow(0 0 10px var(--primary)); transform: scale(1.15); }
-    }
-    
-    .toast-text { text-align: right; flex-grow: 1; }
-    .toast-title { font-size: 15px; font-weight: 900; color: #fff; }
-    .toast-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 3px; }
-    .toast-badge {
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px;
-      border-radius: 12px; box-shadow: 0 0 12px var(--glow);
-    }
+  /* ===== BACKGROUND ===== */
+  #bgCanvas {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none;
+  }
 
-    /* ===== SIDE PROFILE FLOATING ===== */
-    .side-line { position: fixed; left: 20px; top: 25px; z-index: 100; }
-    .side-avatar {
-      width: 46px; height: 46px; border-radius: 50%;
-      border: 2px solid var(--primary); box-shadow: 0 0 15px var(--glow);
-      background: #000; overflow: hidden; transition: transform 0.3s ease;
-    }
-    .side-avatar:hover { transform: scale(1.1) rotate(5deg); }
-    .side-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  /* ===== TOAST ===== */
+  #toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-120px);
+    z-index: 9999;
+    background: linear-gradient(135deg, rgba(0,0,0,0.95), rgba(10,10,25,0.98));
+    border: 1px solid var(--gold);
+    border-radius: 20px;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 0 40px rgba(255,215,0,0.3), 0 0 80px rgba(0,242,255,0.15);
+    backdrop-filter: blur(20px);
+    transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1), opacity 0.5s ease;
+    opacity: 0;
+    min-width: 280px;
+    max-width: 90vw;
+  }
+  #toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  #toast.hide {
+    transform: translateX(-50%) translateY(-120px);
+    opacity: 0;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+  }
+  .toast-icon {
+    font-size: 28px;
+    animation: spinPulse 2s infinite;
+  }
+  @keyframes spinPulse {
+    0%,100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.2) rotate(10deg); }
+  }
+  .toast-text { text-align: right; }
+  .toast-title {
+    font-size: 15px;
+    font-weight: 900;
+    background: linear-gradient(90deg, var(--gold), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .toast-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 2px;
+  }
+  .toast-badge {
+    background: linear-gradient(135deg, #ff6b00, #ffd700);
+    color: #000;
+    font-size: 10px;
+    font-weight: 900;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    animation: pulseBadge 1s infinite;
+  }
+  @keyframes pulseBadge {
+    0%,100% { box-shadow: 0 0 0 0 rgba(255,215,0,0.5); }
+    50% { box-shadow: 0 0 0 6px rgba(255,215,0,0); }
+  }
 
-    /* ===== MAIN CONTAINER ===== */
-    .shell { position: relative; z-index: 1; max-width: 520px; margin: 0 auto; padding: 85px 16px 50px; }
-    
-    .glass {
-      background: var(--panel); border: 1px solid var(--border);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
-    }
+  /* ===== SIDE DECORATION ===== */
+  .side-line {
+    position: fixed; right: 18px; top: 15%; height: 60%;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--cyan), transparent);
+    z-index: 10;
+  }
+  .side-avatar {
+    position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
+    width: 48px; height: 48px; border-radius: 50%;
+    border: 2px solid var(--cyan);
+    box-shadow: 0 0 20px var(--cyan);
+    background: #000; overflow: hidden;
+  }
+  .side-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* ===== HERO AREA ===== */
-    .hero {
-      border-radius: 32px; padding: 28px; margin-bottom: 20px;
-      position: relative; overflow: hidden;
-      background: linear-gradient(145deg, rgba(25, 10, 15, 0.85), rgba(10, 5, 8, 0.85));
-      border: 1px solid rgba(255, 0, 60, 0.3);
-      box-shadow: 0 0 30px rgba(255, 0, 60, 0.05);
-    }
-    .hero-top { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
-    
-    /* HIGH GLOW APP ICON */
-    .app-icon {
-      width: 100px; height: 100px; border-radius: 28px; overflow: hidden;
-      border: 2px solid var(--primary);
-      box-shadow: 0 0 35px var(--glow), 0 0 70px rgba(255, 0, 60, 0.15);
-      position: relative; animation: floatIcon 4s ease-in-out infinite;
-    }
-    
-    @keyframes floatIcon {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
-    .app-icon img { width: 100%; height: 100%; object-fit: cover; }
-    
-    .eyebrow {
-      font-size: 11px; font-weight: 900; letter-spacing: 2px; color: #fff;
-      background: var(--primary); padding: 4px 14px; border-radius: 50px;
-      margin-bottom: 4px; box-shadow: 0 0 10px var(--glow);
-    }
-    .app-name { font-size: 28px; font-weight: 900; color: #fff; text-shadow: 0 0 15px var(--glow); }
-    .app-sub { font-size: 13px; color: rgba(255,255,255,0.5); }
-    
-    .new-badge {
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      color: #fff; font-size: 11px; font-weight: 900;
-      padding: 5px 18px; border-radius: 50px; margin-top: 8px;
-      box-shadow: 0 4px 15px var(--glow);
-    }
+  /* ===== LAYOUT ===== */
+  .shell {
+    position: relative; z-index: 1;
+    max-width: 580px; margin: 0 auto;
+    padding: 24px 14px 40px;
+  }
 
-    /* ===== GLOWING BUTTON SETUP ===== */
-    .btn-wrap { margin-top: 24px; width: 100%; }
-    .download-btn {
-      display: flex; align-items: center; justify-content: center;
-      width: 100%; height: 60px; border-radius: 20px; font-weight: 900; font-size: 17px;
-      border: none; cursor: pointer;
-      background: linear-gradient(135deg, #b3002a 0%, var(--primary) 50%, var(--accent) 100%);
-      background-size: 200% auto; color: #fff; position: relative; overflow: hidden;
-      box-shadow: 0 8px 30px var(--glow); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .download-btn:hover { background-position: right center; box-shadow: 0 12px 35px rgba(255, 0, 60, 0.6); }
-    .download-btn:active { transform: scale(0.96); }
-    .progress-fill {
-      position: absolute; right: 0; top: 0; height: 100%; width: 0%;
-      background: rgba(255, 255, 255, 0.2); transition: width 0.1s ease;
-    }
-    .btn-content { position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; }
-    .success-icon { display: none; }
+  .glass {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
 
-    /* ===== PREMIUM STATS ===== */
-    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 24px; width: 100%; }
-    .stat-card {
-      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 18px; padding: 14px 8px; text-align: center; transition: border-color 0.3s;
-    }
-    .stat-card:hover { border-color: rgba(255, 0, 60, 0.3); }
-    .stat-num { font-size: 18px; font-weight: 900; color: var(--primary); text-shadow: 0 0 10px rgba(255, 0, 60, 0.2); }
-    .stat-label { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+  /* ===== HERO ===== */
+  .hero {
+    border-radius: 28px;
+    padding: 24px;
+    margin-bottom: 18px;
+    border: 1px solid rgba(0, 242, 255, 0.25);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(0,242,255,0.12), transparent 70%);
+    pointer-events: none;
+    animation: breathe 4s ease-in-out infinite;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -60px; left: -60px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(168,85,247,0.1), transparent 70%);
+    pointer-events: none;
+    animation: breathe 4s ease-in-out infinite reverse;
+  }
+  @keyframes breathe {
+    0%,100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
 
-    /* ===== TUTORIAL LINK ===== */
-    .tutorial-link {
-      margin-top: 16px; padding: 18px 22px; border-radius: 24px;
-      border: 1px solid rgba(255, 0, 60, 0.15); display: flex; align-items: center; justify-content: space-between;
-      text-decoration: none; transition: all 0.3s ease;
-      background: linear-gradient(90deg, rgba(255, 0, 60, 0.02), transparent);
-    }
-    .tutorial-link:hover {
-      border-color: var(--primary); background: rgba(255, 0, 60, 0.07);
-      transform: translateX(-3px); box-shadow: 0 0 15px rgba(255, 0, 60, 0.1);
-    }
-    .tut-right { display: flex; align-items: center; gap: 14px; }
-    .tutorial-icon {
-      width: 44px; height: 44px; border-radius: 14px; background: rgba(255, 0, 60, 0.1);
-      display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--primary);
-    }
-    .tutorial-text p { font-size: 14px; color: #fff; font-weight: 700; }
-    .tutorial-text span { font-size: 12px; color: rgba(255,255,255,0.5); }
-    .arrow-left { color: var(--primary); font-weight: 900; }
+  .hero-top {
+    display: flex; align-items: center; gap: 18px;
+  }
+  .app-icon {
+    width: 88px; height: 88px; border-radius: 22px;
+    overflow: hidden; flex-shrink: 0;
+    border: 2px solid var(--cyan);
+    box-shadow: 0 0 24px rgba(0,242,255,0.5), 0 0 60px rgba(0,242,255,0.15);
+    position: relative;
+    animation: iconFloat 3s ease-in-out infinite;
+  }
+  @keyframes iconFloat {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  .app-icon img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* ===== FEATURES PANELS ===== */
-    .features-panel { border-radius: 32px; padding: 26px; margin-top: 16px; }
-    .section-title { font-size: 16px; font-weight: 900; text-align: center; margin-bottom: 20px; color: #fff; letter-spacing: 1px; }
-    .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .feature-card {
-      background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 8px; transition: all 0.3s ease;
-    }
-    .feature-card:hover {
-      border-color: var(--primary); background: rgba(255, 0, 60, 0.04);
-      transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 0, 60, 0.1);
-    }
-    .feat-icon {
-      font-size: 24px; width: 40px; height: 40px; background: rgba(255,255,255,0.03);
-      border-radius: 12px; display: flex; align-items: center; justify-content: center;
-    }
-    .feat-text { font-size: 13px; color: rgba(255,255,255,0.7); font-weight: 500; line-height: 1.4; }
+  /* EYEBROW – new style */
+  .eyebrow {
+    display: inline-block;
+    font-size: 11px; font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    background: rgba(0,242,255,0.08);
+    border: 1px solid rgba(0,242,255,0.3);
+    padding: 5px 14px;
+    border-radius: 50px;
+    margin-bottom: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .eyebrow::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0,242,255,0.3), transparent);
+    animation: sheen 2.5s infinite;
+  }
+  @keyframes sheen {
+    to { left: 150%; }
+  }
 
-    /* ===== FOOTER SECTION ===== */
-    .footer { text-align: center; margin-top: 24px; padding: 24px; border-radius: 24px; font-size: 13px; color: rgba(255,255,255,0.4); }
-    .footer a { color: var(--primary); font-weight: 700; text-decoration: none; text-shadow: 0 0 10px var(--glow); }
-    .footer-logo { font-size: 20px; font-weight: 900; letter-spacing: 3px; color: #fff; margin-bottom: 6px; }
+  .app-name {
+    font-size: 26px; font-weight: 900; color: #fff;
+    text-shadow: 0 0 20px rgba(0,242,255,0.4);
+  }
+  .app-sub {
+    font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 3px;
+  }
 
-    /* ===== LUXURY RED GLOW PARTICLES ===== */
-    .particle { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; animation: floatUp linear infinite; opacity: 0; }
-    @keyframes floatUp {
-      0% { transform: translateY(105vh) scale(0.3); opacity: 0; }
-      20% { opacity: 0.4; }
-      80% { opacity: 0.2; }
-      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
-    }
-  </style>
+  /* NEW BADGE */
+  .new-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: linear-gradient(135deg, #a855f7, #00f2ff);
+    color: #fff;
+    font-size: 11px; font-weight: 900;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-top: 6px;
+    box-shadow: 0 0 15px rgba(168,85,247,0.4);
+    animation: badgePop 2s ease-in-out infinite;
+  }
+  @keyframes badgePop {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+  }
+
+  /* ===== DOWNLOAD BUTTON ===== */
+  .btn-wrap { margin-top: 20px; }
+  .download-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; height: 58px;
+    border-radius: 18px; font-weight: 900; font-size: 17px;
+    border: none; cursor: pointer;
+    background: linear-gradient(135deg, #00d4ff 0%, #0050ff 50%, #7c3aed 100%);
+    background-size: 200% 100%;
+    color: #fff;
+    position: relative; overflow: hidden;
+    box-shadow: 0 4px 30px rgba(0,212,255,0.4);
+    transition: box-shadow 0.3s;
+    animation: btnShift 4s linear infinite;
+  }
+  @keyframes btnShift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  .download-btn:active { transform: scale(0.97); }
+  .progress-fill {
+    position: absolute; left: 0; top: 0;
+    height: 100%; width: 0%;
+    background: rgba(255,255,255,0.18);
+    transition: width 0.05s linear;
+  }
+  .btn-content { position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; }
+  .success-icon { display: none; }
+
+  /* ===== STATS ROW ===== */
+  .stats-row {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px; margin-top: 16px;
+  }
+  .stat-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0,242,255,0.1);
+    border-radius: 16px; padding: 12px 8px;
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 20px; font-weight: 900;
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .stat-label { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+  /* ===== TUTORIAL LINK ===== */
+  .tutorial-link {
+    margin-top: 16px; padding: 18px;
+    border-radius: 20px;
+    border: 1px dashed rgba(0,242,255,0.4);
+    display: flex; align-items: center; gap: 14px;
+    text-decoration: none;
+    transition: background 0.3s;
+  }
+  .tutorial-link:hover { background: rgba(0,242,255,0.05); }
+  .tutorial-icon {
+    width: 44px; height: 44px; border-radius: 14px;
+    background: rgba(0,242,255,0.1);
+    border: 1px solid rgba(0,242,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .tutorial-text p { font-size: 14px; color: #fff; font-weight: 700; }
+  .tutorial-text span { font-size: 12px; color: var(--cyan); }
+
+  /* ===== FEATURES ===== */
+  .features-panel {
+    border-radius: 28px; padding: 24px; margin-top: 16px;
+  }
+  .section-title {
+    font-size: 18px; font-weight: 900;
+    text-align: center; margin-bottom: 18px;
+    color: var(--cyan);
+    letter-spacing: 1px;
+  }
+  .features-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .feature-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0,242,255,0.1);
+    border-radius: 16px; padding: 14px;
+    display: flex; flex-direction: column; gap: 6px;
+    transition: border-color 0.3s, transform 0.3s;
+    animation: fadeUp 0.5s ease both;
+  }
+  .feature-card:hover {
+    border-color: rgba(0,242,255,0.35);
+    transform: translateY(-2px);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .feature-card:nth-child(1) { animation-delay: 0.1s; }
+  .feature-card:nth-child(2) { animation-delay: 0.2s; }
+  .feature-card:nth-child(3) { animation-delay: 0.3s; }
+  .feature-card:nth-child(4) { animation-delay: 0.4s; }
+  .feature-card:nth-child(5) { animation-delay: 0.5s; }
+  .feature-card:nth-child(6) { animation-delay: 0.6s; }
+  .feat-icon { font-size: 22px; }
+  .feat-text { font-size: 13px; color: #d1d5db; line-height: 1.4; }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    text-align: center; margin-top: 20px; padding: 20px;
+    font-size: 14px; color: rgba(255,255,255,0.5);
+    border-radius: 20px;
+  }
+  .footer a { color: var(--cyan); font-weight: 900; text-decoration: none; }
+  .footer-logo {
+    font-size: 22px; font-weight: 900; letter-spacing: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 6px;
+  }
+
+  /* ===== FLOATING PARTICLES ===== */
+  .particle {
+    position: fixed; border-radius: 50%;
+    pointer-events: none; z-index: 0;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) scale(0); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+  }
+</style>
 </head>
 <body>
-  <canvas id="bgCanvas"></canvas>
 
-  <div id="toast" class="hide">
-    <div class="toast-icon">🍿</div>
-    <div class="toast-text">
-      <div class="toast-title">أهلاً بك في سينمانا</div>
-      <div class="toast-sub">أكبر منصة لمشاهدة الأفلام والمسلسلات</div>
+<!-- Canvas BG -->
+<canvas id="bgCanvas" width="440" height="757"></canvas>
+
+<!-- TOAST -->
+<div id="toast" class="hide">
+  <div class="toast-icon">🚀</div>
+  <div class="toast-text">
+    <div class="toast-title">ايساين جديد — شهادة مجانية جديدة!</div>
+    <div class="toast-sub">متاحة الآن للجميع بدون قيود</div>
+  </div>
+  <div class="toast-badge">جديد 🔥</div>
+</div>
+
+<!-- SIDE LINE -->
+<div class="side-line">
+  <div class="side-avatar">
+    <img src="https://j.top4top.io/p_3823meiyj0.jpeg" alt="Owner">
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="shell">
+
+  <!-- HERO -->
+  <section class="hero glass">
+    <div class="hero-top">
+      <div class="app-icon">
+        <img src="https://c.top4top.io/p_3823fp92v1.jpeg" alt="ESIGN">
+      </div>
+      <div>
+        <div class="eyebrow">ESIGN NEW</div>
+        <h1 class="app-name">ايساين ESIGN</h1>
+        <div class="app-sub">توقيع التطبيقات بدون كمبيوتر</div>
+        <div class="new-badge">✦ شهادة مجانية جديدة ✦</div>
+      </div>
     </div>
-    <div class="toast-badge">VIP</div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">مجاني</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">iOS</div>
+        <div class="stat-label">متوافق</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">Pro</div>
+        <div class="stat-label">إصدار</div>
+      </div>
+    </div>
+
+    <div class="btn-wrap">
+      <button class="download-btn" onclick="startDownload(this, 'https://betadrop.app/install/?i=APizE4')">
+        <div class="progress-fill"></div>
+        <div class="btn-content">
+          <span class="btnText">⬇ تثبيت الآن</span>
+          <span class="success-icon">✅</span>
+        </div>
+      </button>
+    </div>
+  </section>
+
+  <!-- TUTORIAL -->
+  <a href="https://t.me/hassanyIPA/329" class="tutorial-link glass">
+    <div class="tutorial-icon">🛡</div>
+    <div class="tutorial-text">
+      <p>حل مشكلة مطور مؤسسة غير موثوق</p>
+      <span>اضغط هنا لمشاهدة الشرح ←</span>
+    </div>
+  </a>
+
+  <!-- FEATURES -->
+  <section class="features-panel glass">
+    <h2 class="section-title">✦ مميزات ايساين ✦</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feat-icon">✍️</div>
+        <div class="feat-text">توقيع التطبيقات بصيغة IPA</div>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">📱</div>
+        <div class="feat-text">تثبيت بدون كمبيوتر</div>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">🎓</div>
+        <div class="feat-text">دعم جميع شهادات المطورين</div>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">⚙️</div>
+        <div class="feat-text">تعديل ملفات التطبيق بسهولة</div>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">🔧</div>
+        <div class="feat-text">إضافة أدوات وتعديلات للتطبيقات</div>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-text">سرعة في التنفيذ وواجهة احترافية</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="footer glass">
+    <div class="footer-logo">ESIGN</div>
+    <div>تم التطوير والبرمجة بواسطة <a href="https://t.me/hassanyIPA">hassanyIPA</a></div>
   </div>
 
-  <div class="side-line">
-    <div class="side-avatar">
-      <img src="https://l.top4top.io/p_3823vgthk1.jpeg" alt="Owner">
-    </div>
-  </div>
+</main>
 
-  <main class="shell">
-    <section class="hero glass">
-      <div class="hero-top">
-        <div class="app-icon">
-          <img src="https://l.top4top.io/p_3823vgthk1.jpeg" alt="CINEMANA">
-        </div>
-        <div>
-          <div class="eyebrow">CINEMANA IOS</div>
-          <h1 class="app-name">تطبيق سينمانا Cinemana</h1>
-          <div class="app-sub">أكبر منصة لمشاهدة الأفلام والمسلسلات مجاناً</div>
-          <div class="new-badge">✦ شهادة مجانية جديدة ✦</div>
-        </div>
-      </div>
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-num">VIP</div>
-          <div class="stat-label">إصدار بدون إعلانات</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num">iOS</div>
-          <div class="stat-label">متوافق بالكامل</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num">4K Ultra</div>
-          <div class="stat-label">أعلى جودة</div>
-        </div>
-      </div>
-      <div class="btn-wrap">
-        <button class="download-btn" onclick="startDownload(this, 'itms-services://?action=download-manifest&url=https://github.com/dfreeeei/Vb/releases/download/Y/manifest.plist')">
-          <div class="progress-fill"></div>
-          <div class="btn-content">
-            <span class="btnText">📦 ابدأ التثبيت الفوري الآن</span>
-            <span class="success-icon">✔️</span>
-          </div>
-        </button>
-      </div>
-    </section>
+<audio id="successSound" src="https://ashtemobile.tututweak.com/sound.mp3" preload="none" playsinline=""></audio>
 
-    <a href="https://t.me/atraheeb7/55" class="tutorial-link glass">
-      <div class="tut-right">
-        <div class="tutorial-icon">🛡️</div>
-        <div class="tutorial-text">
-          <p>تخطي مشكلة "مطور مؤسسة غير موثوق"</p>
-          <span>اضغط هنا لمشاهدة شرح التثبيت السريع</span>
-        </div>
-      </div>
-      <div class="arrow-left">←</div>
-    </a>
+<script>
+// ===== TOAST =====
+window.addEventListener('load', () => {
+  const toast = document.getElementById('toast');
+  setTimeout(() => { toast.classList.add('show'); }, 400);
+  setTimeout(() => { toast.classList.remove('show'); toast.classList.add('hide'); }, 3400);
+});
 
-    <section class="features-panel glass">
-      <h2 class="section-title">ميزات نسخة سينمانا المخصصة</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feat-icon">🚫</div>
-          <div class="feat-text">مشاهدة بدون أي إعلانات مزعجة</div>
-        </div>
-        <div class="feature-card">
-          <div class="feat-icon">⬇️</div>
-          <div class="feat-text">تحميل الحلقات والأفلام مباشرة للجهاز</div>
-        </div>
-        <div class="feature-card">
-          <div class="feat-icon">⚡</div>
-          <div class="feat-text">سيرفرات سريعة جداً تدعم جميع الشبكات</div>
-        </div>
-        <div class="feature-card">
-          <div class="feat-icon">🌍</div>
-          <div class="feat-text">ترجمة احترافية مدمجة متعددة اللغات</div>
-        </div>
-        <div class="feature-card">
-          <div class="feat-icon">🔔</div>
-          <div class="feat-text">تنبيهات فورية عند نزول الحلقات الجديدة</div>
-        </div>
-        <div class="feature-card">
-          <div class="feat-icon">🌙</div>
-          <div class="feat-text">واجهة منسقة تدعم الوضع الليلي السينمائي</div>
-        </div>
-      </div>
-    </section>
+// ===== CANVAS STARS + GRID =====
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let stars = [], W, H;
 
-    <div class="footer glass">
-      <div class="footer-logo">CINEMANA PREMIUM</div>
-      <div>تم التطوير والبرمجة بواسطة <span style="color: var(--primary); font-weight: bold;">hassanyIPA</span></div>
-    </div>
-  </main>
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  stars = Array.from({ length: 130 }, () => ({
+    x: Math.random() * W, y: Math.random() * H,
+    r: Math.random() * 1.8, op: Math.random(), spd: 0.01 + Math.random() * 0.015
+  }));
+}
 
-  <audio id="successSound" src="https://ashtemobile.tututweak.com/sound.mp3" preload="none" playsinline=""></audio>
+function draw() {
+  ctx.clearRect(0, 0, W, H);
 
-  <script>
-    // ===== DRAG-DOWN TOAST TRIGGER =====
-    window.addEventListener('DOMContentLoaded', () => {
-      const toast = document.getElementById('toast');
-      setTimeout(() => { toast.classList.add('show'); }, 600);
-      setTimeout(() => { toast.classList.remove('show'); toast.classList.add('hide'); }, 4200);
-    });
+  // grid
+  ctx.strokeStyle = 'rgba(0,242,255,0.04)';
+  ctx.lineWidth = 1;
+  const gs = 60;
+  for (let x = 0; x < W; x += gs) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y = 0; y < H; y += gs) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
 
-    // ===== CINEMA LIGHTS BACKGROUND (CANVAS) =====
-    const canvas = document.getElementById('bgCanvas');
-    const ctx = canvas.getContext('2d');
-    let dots = [], W, H;
+  // stars
+  stars.forEach(s => {
+    ctx.fillStyle = `rgba(255,255,255,${s.op})`;
+    ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+    s.op += s.spd;
+    if (s.op > 1 || s.op < 0) s.spd *= -1;
+  });
 
-    function resize() {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-      dots = Array.from({ length: 50 }, () => ({
-        x: Math.random() * W, y: Math.random() * H,
-        r: Math.random() * 2.5 + 1, alpha: Math.random() * 0.4, speed: 0.15 + Math.random() * 0.4
-      }));
+  requestAnimationFrame(draw);
+}
+
+window.addEventListener('resize', resize);
+resize(); draw();
+
+// ===== FLOATING PARTICLES =====
+function spawnParticle() {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  const size = 2 + Math.random() * 4;
+  const colors = ['rgba(0,242,255,0.5)', 'rgba(168,85,247,0.5)', 'rgba(255,215,0,0.4)'];
+  const color = colors[Math.floor(Math.random() * colors.length)];
+  Object.assign(p.style, {
+    width: size + 'px', height: size + 'px',
+    background: color,
+    left: Math.random() * 100 + 'vw',
+    animationDuration: (6 + Math.random() * 8) + 's',
+    animationDelay: Math.random() * 5 + 's',
+    boxShadow: `0 0 ${size*2}px ${color}`
+  });
+  document.body.appendChild(p);
+  setTimeout(() => p.remove(), 14000);
+}
+setInterval(spawnParticle, 800);
+
+// ===== DOWNLOAD =====
+function startDownload(btn, link) {
+  if (btn.classList.contains('disabled')) return;
+  btn.classList.add('disabled');
+  const fill = btn.querySelector('.progress-fill');
+  const btnText = btn.querySelector('.btnText');
+  const successIcon = btn.querySelector('.success-icon');
+  const sound = document.getElementById('successSound');
+  let pct = 0;
+
+  const iv = setInterval(() => {
+    pct += 1;
+    fill.style.width = pct + '%';
+    btnText.innerText = `جاري التثبيت... ${pct}%`;
+    if (pct >= 100) {
+      clearInterval(iv);
+      btnText.innerText = 'اكتمل بنجاح 🎉';
+      successIcon.style.display = 'inline-block';
+      sound.play().catch(() => {});
+      setTimeout(() => {
+        window.location.href = link;
+        setTimeout(() => { window.location.href = 'https://t.me/hassanyIPA'; }, 2000);
+      }, 1000);
     }
+  }, 45);
+}
+</script>
 
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      // Subtle Red Cinema Grid
-      ctx.strokeStyle = 'rgba(255, 0, 60, 0.025)';
-      ctx.lineWidth = 1;
-      const step = 60;
-      for (let x = 0; x < W; x += step) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
-      for (let y = 0; y < H; y += step) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
-      
-      // Moving Projector Glowing Dots
-      dots.forEach(d => {
-        ctx.fillStyle = `rgba(255, 0, 60, ${d.alpha})`;
-        ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI*2); ctx.fill();
-        d.y -= d.speed;
-        if(d.y < -10) { d.y = H + 10; d.x = Math.random() * W; }
-      });
-      requestAnimationFrame(draw);
-    }
-    
-    window.addEventListener('resize', resize);
-    resize();
-    draw();
 
-    // ===== GLOWING RED PARTICLES =====
-    function spawnParticle() {
-      const p = document.createElement('div');
-      p.className = 'particle';
-      const size = Math.random() * 4 + 2;
-      const colors = ['rgba(255,0,60,0.4)', 'rgba(255,77,0,0.3)', 'rgba(255,255,255,0.2)'];
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      Object.assign(p.style, {
-        width: size + 'px', height: size + 'px',
-        background: color, left: Math.random() * 100 + 'vw',
-        animationDuration: (8 + Math.random() * 6) + 's',
-        boxShadow: `0 0 12px ${color}`
-      });
-      document.body.appendChild(p);
-      setTimeout(() => p.remove(), 12000);
-    }
-    setInterval(spawnParticle, 900);
-
-    // ===== DOWNLOAD SIMULATION ENGINE =====
-    function startDownload(btn, link) {
-      if (btn.classList.contains('disabled')) return;
-      btn.classList.add('disabled');
-      const fill = btn.querySelector('.progress-fill');
-      const btnText = btn.querySelector('.btnText');
-      const successIcon = btn.querySelector('.success-icon');
-      const sound = document.getElementById('successSound');
-      let pct = 0;
-      
-      const interval = setInterval(() => {
-        pct += 1;
-        fill.style.width = pct + '%';
-        btnText.innerText = `جاري التثبيت ... ${pct}%`;
-        
-        if (pct >= 100) {
-          clearInterval(interval);
-          btnText.innerText = 'تم بدء التثبيت بنجاح!';
-          successIcon.style.display = 'inline-block';
-          sound.play().catch(() => {});
-          
-          setTimeout(() => {
-            window.location.href = link;
-            // يعود لقناتك الخاصة (إذا أردت تغييرها مستقبلاً، استبدل الرابط أدناه)
-            setTimeout(() => { window.location.href = 'https://t.me/atraheebb'; }, 2200);
-          }, 800);
-        }
-      }, 40);
-    }
-  </script>
-</body>
-</html>
+<div class="particle" style="width: 3.607388px; height: 3.607388px; background: rgba(255, 215, 0, 0.4); left: 41.936236vw; animation-duration: 11.054656s; animation-delay: 4.074402s; box-shadow: rgba(255, 215, 0, 0.4) 0px 0px 7.214777px;"></div><div class="particle" style="width: 4.961372px; height: 4.961372px; background: rgba(168, 85, 247, 0.5); left: 26.443346vw; animation-duration: 6.276841s; animation-delay: 3.888811s; box-shadow: rgba(168, 85, 247, 0.5) 0px 0px 9.922744px;"></div><div class="particle" style="width: 3.700085px; height: 3.700085px; background: rgba(0, 242, 255, 0.5); left: 92.717484vw; animation-duration: 11.816453s; animation-delay: 2.85256s; box-shadow: rgba(0, 242, 255, 0.5) 0px 0px 7.400169px;"></div><div class="particle" style="width: 2.888041px; height: 2.888041px; background: rgba(168, 85, 247, 0.5); left: 83.728923vw; animation-duration: 12.596235s; animation-delay: 0.391744s; box-shadow: rgba(168, 85, 247, 0.5) 0px 0px 5.776082px;"></div><div class="particle" style="width: 4.087891px; height: 4.087891px; background: rgba(255, 215, 0, 0.4); left: 30.796806vw; animation-duration: 10.649366s; animation-delay: 0.426884s; box-shadow: rgba(255, 215, 0, 0.4) 0px 0px 8.175783px;"></div><div class="particle" style="width: 5.650487px; height: 5.650487px; background: rgba(168, 85, 247, 0.5); left: 2.45225vw; animation-duration: 8.352578s; animation-delay: 1.92234s; box-shadow: rgba(168, 85, 247, 0.5) 0px 0px 11.300973px;"></div><div class="particle" style="width: 3.751046px; height: 3.751046px; background: rgba(255, 215, 0, 0.4); left: 22.815128vw; animation-duration: 11.045565s; animation-delay: 4.099008s; box-shadow: rgba(255, 215, 0, 0.4) 0px 0px 7.502093px;"></div><div class="particle" style="width: 5.021546px; height: 5.021546px; background: rgba(255, 215, 0, 0.4); left: 90.705072vw; animation-duration: 13.820613s; animation-delay: 0.494234s; box-shadow: rgba(255, 215, 0, 0.4) 0px 0px 10.043093px;"></div><div class="particle" style="width: 5.538489px; height: 5.538489px; background: rgba(168, 85, 247, 0.5); left: 37.679936vw; animation-duration: 9.944497s; animation-delay: 1.08771s; box-shadow: rgba(168, 85, 247, 0.5) 0px 0px 11.076978px;"></div><div class="particle" style="width: 3.975367px; height: 3.975367px; background: rgba(168, 85, 247, 0.5); left: 21.082126vw; animation-duration: 9.731731s; animation-delay: 0.990036s; box-shadow: rgba(168, 85, 247, 0.5) 0px 0px 7.950735px;"></div><div class="particle" style="width: 2.359339px; height: 2.359339px; background: rgba(255, 215, 0, 0.4); left: 36.128783vw; animation-duration: 10.040274s; animation-delay: 0.725053s; box-shadow: rgba(255, 215, 0, 0.4) 0px 0px 4.718679px;"></div><div class="particle" style="width: 3.791066px; height: 3.791066px; background: rgba(0, 242, 255, 0.5); left: 21.043724vw; animation-duration: 11.397863s; animation-delay: 3.861165s; box-shadow: rgba(0, 242, 255, 0.5) 0px 0px 7.582133px;"></div><div class="particle" style="width: 2.044189px; height: 2.044189px; background: rgba(168, 85, 247, 0.5); left: 23.636657vw; animation-duration: 6.386916s; animation-delay: 1.706944s; box-shadow: rgba(168, 85, 247, 0.5) 0px 0px 4.088379px;"></div><div class="particle" style="width: 5.054929px; height: 5.054929px; background: rgba(255, 215, 0, 0.4); left: 19.243215vw; animation-duration: 11.951374s; animation-delay: 2.598177s; box-shadow: rgba(255, 215, 0, 0.4) 0px 0px 10.109859px;"></div><div class="particle" style="width: 5.3977px; height: 5.3977px; background: rgba(255, 215, 0, 0.4); left: 2.372066vw; animation-duration: 8.434192s; animation-delay: 1.867282s; box-shadow: rgba(255, 215, 0, 0.4) 0px 0px 10.7954px;"></div><div class="particle" style="width: 2.691283px; height: 2.691283px; background: rgba(168, 85, 247, 0.5); left: 8.211035vw; animation-duration: 9.912471s; animation-delay: 1.695801s; box-shadow: rgba(168, 85, 247, 0.5) 0px 0px 5.382566px;"></div></body></html>
